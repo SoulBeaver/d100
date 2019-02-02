@@ -1,0 +1,93 @@
+package com.christian.dnd.d100
+
+import org.amshove.kluent.shouldContain
+import org.amshove.kluent.shouldContainAll
+import org.spekframework.spek2.Spek
+import kotlin.random.Random
+
+class RollMasterSpec: Spek({
+    group("rolling a single table with a single entry") {
+        val tables = listOf(
+            Table("This slime's colour:", 1, listOf("red"), 1)
+        )
+
+        test("has descriptor and result") {
+            RollMaster().roll(tables) shouldContain "This slime's colour: red"
+        }
+    }
+
+    group("rolling a single table with multiple entries") {
+        val tables = listOf(
+            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 1)
+        )
+
+        test("picks a result determined by fair random die roll") {
+            val rollMaster = RollMaster(object: Random() {
+                public override fun nextBits(bitCount: Int): Int = 0
+
+                public override fun nextInt(until: Int): Int {
+                    return 4
+                }
+            })
+
+            rollMaster.roll(tables) shouldContain "This slime's colour: cyan"
+        }
+    }
+
+    group("rolling a single table with multiple entries multiple times") {
+        val tables = listOf(
+            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 5)
+        )
+
+        test("rolls the same table multiple times") {
+            val rollMaster = RollMaster(Random(0))
+
+            rollMaster.roll(tables) shouldContainAll listOf(
+                "This slime's colour: eggshell",
+                "This slime's colour: black",
+                "This slime's colour: sherwood green",
+                "This slime's colour: brown",
+                "This slime's colour: blue"
+            )
+        }
+    }
+
+    group("rolling multiple tables of varying sizes") {
+        val tables = listOf(
+            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 1),
+            Table("This slime’s texture:", 4, listOf("smooth", "marbled", "cracked", "viscous"), 1),
+            Table("This slime's odor:", 6, listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive"), 1)
+        )
+
+        test("rolls each table once") {
+            val rollMaster = RollMaster(Random(0))
+
+            rollMaster.roll(tables) shouldContainAll listOf(
+                "This slime's colour: eggshell",
+                "This slime’s texture: marbled",
+                "This slime's odor: oily"
+            )
+        }
+    }
+
+    group("rolling multiple tables of varying sizes a variable number of times") {
+        val tables = listOf(
+            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 1),
+            Table("This slime’s texture:", 4, listOf("smooth", "marbled", "cracked", "viscous"), 3),
+            Table("This slime's odor:", 6, listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive"), 2)
+        )
+
+        test("rolls each table once") {
+            val rollMaster = RollMaster(Random(0))
+
+            rollMaster.roll(tables) shouldContainAll listOf(
+                "This slime's colour: eggshell",
+                "This slime’s texture: marbled",
+                "This slime’s texture: viscous",
+                "This slime’s texture: cracked",
+                "This slime's odor: musky",
+                "This slime's odor: corrosive"
+            )
+        }
+    }
+})

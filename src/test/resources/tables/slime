@@ -1,0 +1,105 @@
+D20	This slime’s colour:
+1	Is red. Its touch is burning hot.
+2	Is blue. Its touch is freezing cold.
+3	Is green. Its touch is acidic.
+4	Is yellow. Its touch carries an electrical shock.
+5	Is purple. Anyone touched by it must make a save or else fall under its control.
+6	Is orange. Its touch is poisonous.
+7	Is brown. Its touch is a vector for a nasty disease.
+8	Is white. It’s vampiric, converting health it drains from those it touches into its own.
+9	Is black. Every 1d4 rounds, anything caught in the slime is annihilated.
+10	Is grey. It attacks by exploding and then reforming itself 1d4 rounds later.
+11	Is clear. It deals the same sort of damage as the last attack that hurt it.
+12	Is mirrored. Any attacks against it are reflected back at the attacker. The only reliable way to damage the slime is to do it indirectly.
+13	Is gold. It’s extra-dense, and bludgeons prey with its mass to mash them into a paste it can absorb.
+14	Is silver. It shapes itself into sharp blades to attack, slicing prey into bits small enough for it to absorb.
+15	Is octarine. It absorbs spells from the wizards, scrolls, etc., it touches, then casts them randomly.
+16	Is pink. Its touch implants spores that start off sealing a single point of damage, but increase in severity each round you don’t use an action to remove them (1>1d4>1d6>1d8>etc.).
+17	Is glowing lime. Its touch inflicts mutations.
+18	Is mauve. Anyone touched by it must save or be paralyzed.
+19	Is teal. It’s tactilely telekinetic. Anything it touches it can move for 1d4 rounds telekinetically with force equivalent to someone with a strength score of 15.
+20	Changes every round. Reroll its colour at the start of every round, if a 20 is rolled again it explodes or something, fuck.
+D20	This slime’s texture:
+1	Is chunky. It’s tougher than other slimes of a similar size would be.
+2	Is oily. It’s slippery and moves faster than other slimes.
+3	Is sticky. It can ooze up sheer surfaces and is even harder to escape from if it grapples you.
+4	Is lumpy. When damaged it splits into two slimes with half the health of their original.
+5	Is gritty. Its attacks deal more damage than those of other slimes of a similar size.
+6	Is foamy. It’s more fragile than other slimes of a similar size, but is also light enough to glide short distances.
+7	Is rubbery. It moves by bouncing rather than flowing, and can move very far after a drop.
+8	Is spongey. A swarm of vermin live symbiotically in its holes.
+9	Is runny, thin. Bits of it splash off when it is wounded. After it is killed in a fight there is a 10% per HD chance of the slime reforming in a weakened state from a bit of itself stuck to your boot, or in a crack in the floor, or wherever else, unless special care is taken to destroy every trace.
+10	Is tongue-like. It can track scents like a bloodhound.
+11	Is silky. The slime possesses an inhuman intelligence concerned only with acquiring more food.
+12	Is blissfully soft. Attempts to escape its grasp are based on wisdom rather than strength, as will more than muscle is required.
+13	Is prickly. It can fire darts from its own mass which carry its touch effect.
+14	Is abrasive. Any contact with it deals minor damage to people and equipment.
+15	Is clammy. It can mimic the colours and shapes of inanimate objects to aid in ambush, but its texture will always be recognizably abnormal.
+16	Is crusty and flaky. It leaves inert pieces of itself around its territory that act as traps that inflict the effect of its colour when touched.
+17	Is fuzzy. Bits of it cling to those it strikes, dealing more of the slime’s damage/effect over time unless washed/scraped off.
+18	Is ichorous. The slime regenerates damage over time.
+19	Is resinous. It can symbiotically inhabits the bodies of other organisms and will emerge to protect its host.
+20	Is turbulent. It must always keep moving, or else it dies. It can knock enemies back with a charge attack.
+D20	This slime prefers to feed:
+1	By insinuating itself into peoples’ bodies then digesting them from the inside-out.
+2	By clinging to ceilings and dropping on those who walk below.
+3	By diluting itself in bodies of water and dragging those who come to drink or swim in.
+4	Even over survival. It can be lured into obvious traps with food.
+5	On vegetable rather than animal matter, but won’t turn the latter down if hungry.
+6	By hiding in containers and enclosed spaces then springing out at whoever opens them.
+7	Less than it does to hunt. It will abandon sure, captured prey if a new opportunity for a chase presents itself.
+8	By being fed by others. It is subservient by nature.
+9	On prey in the throes of fear, and will instinctually attempt to produce dread and trepidation in those it hunts.
+10	With a minimal expenditure of energy.
+11	In order to fuel its own reproduction rather than its growth.
+12	On things it’s never tasted before.
+13	Like a scavenger, and by stealing other creatures’ prey.
+14	Like a parasite on a much larger creature.
+15	Like a swarm of locusts, leaving a desolate trail.
+16	By rolling down slopes and stairs like a flood.
+17	In the dark, without interruption.
+18	Slowly, with ample time in a safe place to smother and absorb its prey.
+19	On one larger meal rather than many smaller ones.
+20	On a particular organ of its prey, and nothing else.
+D20	This slime came from:
+1	The snot of a great demon.
+2	An alchemical experiment gone wrong.
+3	A glob of slime mold that got caught in a temporal distortion field and emerged hyper-evolved.
+4	The sputum of someone who ate a cursed fruit.
+5	The mixture of chemical weapons on a battlefield.
+6	The remains of someone who died of a liquefying disease.
+7	Dew that condensed in an enchanted bowl.
+8	Another dimension, where gelatinous life won out over solid organisms.
+9	The unfortunate victim of a modified disintegration spell.
+10	The creation of a fleshworker trying to mutate themself into a perfectly resilient lifeform.
+11	A bet between a theologian and a natural philosopher to see who could best recreate their theorized primordial ooze.
+12	Underworld cave-slime selectively bred into a weapon.
+13	The tailings of a mine of magical ore.
+14	The ill-fated mating of a human and a watery spirit.
+15	A meteor from an alien world.
+16	A wizard’s attempt to create the perfect pet.
+17	A flawed ritual to summon an acid elemental.
+18	A very bad idea for a new sort of paint.
+19	The degenerated nano-golem technology of an extinct culture.
+20	Necromantically reanimated stomach contents.
+D20	Extracts from this slime can be used to:
+1	Extract precious metals from alloys and ores.
+2	Temporarily animate potions into loyal mini-slimes.
+3	Treat gout.
+4	Disguise one’s scent.
+5	Coat weapons in an oil that temporarily grants them the effect of the slime’s touch.
+6	Create an ointment that temporarily grants the person who uses it resistance to effects similar to the slime’s touch.
+7	Eat through locks and other small devices.
+8	Flavour food as a much sought-after spice.
+9	Fill grenades that explode to apply the effect of that slime’s touch to an area.
+10	Moisturize the skin and retain a youthful look.
+11	Distill pheromones that allow simplistic, temporary control of other slimes.
+12	Lubricate the workings of arcane machines, bring ancient technology back to a modicum of functionality.
+13	Provide fertilizer for otherworldly crops.
+14	Get very high.
+15	Treat leather and textiles into superlative armours.
+16	Repel vermin.
+17	Distill alluring perfumes.
+18	Reform the slime in alkahestral baths.
+19	Clean silverware and other corrosion-resistant goods to a remarkable sheen.
+20	Prevent wounds from getting infected.
