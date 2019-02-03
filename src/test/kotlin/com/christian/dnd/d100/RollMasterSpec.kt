@@ -12,7 +12,7 @@ class RollMasterSpec: Spek({
         )
 
         test("has descriptor and result") {
-            RollMaster().roll(tables) shouldContain "This slime's colour: red"
+            RollMaster().rollWithDescriptor(tables) shouldContain "This slime's colour: red"
         }
     }
 
@@ -30,7 +30,7 @@ class RollMasterSpec: Spek({
                 }
             })
 
-            rollMaster.roll(tables) shouldContain "This slime's colour: cyan"
+            rollMaster.rollWithDescriptor(tables) shouldContain "This slime's colour: cyan"
         }
     }
 
@@ -42,7 +42,7 @@ class RollMasterSpec: Spek({
         test("rolls the same table multiple times") {
             val rollMaster = RollMaster(Random(0))
 
-            rollMaster.roll(tables) shouldContainAll listOf(
+            rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
                 "This slime's colour: black",
                 "This slime's colour: sherwood green",
@@ -62,7 +62,7 @@ class RollMasterSpec: Spek({
         test("rolls each table once") {
             val rollMaster = RollMaster(Random(0))
 
-            rollMaster.roll(tables) shouldContainAll listOf(
+            rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
                 "This slime’s texture: marbled",
                 "This slime's odor: oily"
@@ -80,7 +80,7 @@ class RollMasterSpec: Spek({
         test("rolls each table once") {
             val rollMaster = RollMaster(Random(0))
 
-            rollMaster.roll(tables) shouldContainAll listOf(
+            rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
                 "This slime’s texture: marbled",
                 "This slime’s texture: viscous",
@@ -88,6 +88,24 @@ class RollMasterSpec: Spek({
                 "This slime's odor: musky",
                 "This slime's odor: corrosive"
             )
+        }
+    }
+
+    group("rolling a table with quick'n'dirty results silently") {
+        val tables = listOf(
+            Table("Armor", 4, listOf("Breastplate", "Chain mail", "Chain shirt", "Half plate"), 1)
+        )
+
+        test("returns the result without a descriptor") {
+            val rollMaster = RollMaster(object: Random() {
+                public override fun nextBits(bitCount: Int): Int = 0
+
+                public override fun nextInt(until: Int): Int {
+                    return 0
+                }
+            })
+
+            rollMaster.rollWithoutDescriptor(tables) shouldContain "Breastplate"
         }
     }
 })

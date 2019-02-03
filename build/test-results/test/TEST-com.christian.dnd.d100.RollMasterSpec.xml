@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.christian.dnd.d100.RollMasterSpec" tests="6" skipped="0" failures="0" errors="0" timestamp="2019-02-03T11:12:09" hostname="SoulBeaver" time="0.01">
+  <properties/>
+  <testcase name="has descriptor and result" classname="com.christian.dnd.d100.RollMasterSpec" time="0.005"/>
+  <testcase name="picks a result determined by fair random die roll" classname="com.christian.dnd.d100.RollMasterSpec" time="0.0"/>
+  <testcase name="rolls the same table multiple times" classname="com.christian.dnd.d100.RollMasterSpec" time="0.002"/>
+  <testcase name="rolls each table once" classname="com.christian.dnd.d100.RollMasterSpec" time="0.001"/>
+  <testcase name="rolls each table once" classname="com.christian.dnd.d100.RollMasterSpec" time="0.0"/>
+  <testcase name="returns the result without a descriptor" classname="com.christian.dnd.d100.RollMasterSpec" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

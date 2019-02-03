@@ -4,7 +4,19 @@ import kotlin.random.Random
 
 class RollMaster(private val random: Random = Random.Default) {
 
-    fun roll(tables: List<Table>): List<String> {
+    fun rollWithDescriptor(tables: List<Table>): List<String> {
+        return roll(tables) { descriptor, result ->
+            "$descriptor $result"
+        }
+    }
+
+    fun rollWithoutDescriptor(tables: List<Table>): List<String> {
+        return roll(tables) { _, result ->
+            result
+        }
+    }
+
+    private fun roll(tables: List<Table>, formatter: (String, String) -> String): List<String> {
         val tableRolls = mutableListOf<String>()
 
         for (table in tables) {
@@ -13,7 +25,7 @@ class RollMaster(private val random: Random = Random.Default) {
             val rollResults = Array(rollsRequired) { results[random.nextInt(dieSize)] }
 
             (0 until rollsRequired).map {
-                "$descriptor ${rollResults[it]}"
+                formatter(descriptor, rollResults[it])
             }.forEach {
                 tableRolls.add(it)
             }

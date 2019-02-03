@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.christian.dnd.d100.CalculatorSpec" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-01-31T23:06:36" hostname="SoulBeaver" time="0.007">
-  <properties/>
-  <testcase name="adds 2 to 2" classname="com.christian.dnd.d100.CalculatorSpec" time="0.004"/>
-  <testcase name="divides 4 by 2" classname="com.christian.dnd.d100.CalculatorSpec" time="0.0"/>
-  <testcase name="throws ArithmeticException" classname="com.christian.dnd.d100.CalculatorSpec" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

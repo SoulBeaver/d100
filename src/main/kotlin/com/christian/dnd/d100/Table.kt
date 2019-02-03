@@ -1,5 +1,10 @@
 package com.christian.dnd.d100
 
+enum class RollBehavior {
+    REPEAT,
+    ADD
+}
+
 data class Table(
     /**
      * The descriptor is the flavor text next to the die size of a table, e.g.
@@ -35,5 +40,11 @@ data class Table(
      *
      * Rolls Required: 2
      */
-    val rollsRequired: Int
+    val rollsRequired: Int,
+
+    /**
+     * When a table requests multiple rolls, do you repeat the roll against the table
+     * or add all the rolls and check the table once?
+     */
+    val rollBehavior: RollBehavior = RollBehavior.REPEAT
 )

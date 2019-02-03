@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.christian.dnd.d100.D100TableParserSpec" tests="6" skipped="0" failures="0" errors="0" timestamp="2019-02-03T11:12:09" hostname="SoulBeaver" time="0.01">
+  <properties/>
+  <testcase name="has the correct attributes set" classname="com.christian.dnd.d100.D100TableParserSpec" time="0.008"/>
+  <testcase name="has the correct attributes set" classname="com.christian.dnd.d100.D100TableParserSpec" time="0.0"/>
+  <testcase name="has the correct attributes set" classname="com.christian.dnd.d100.D100TableParserSpec" time="0.0"/>
+  <testcase name="has the correct attributes set" classname="com.christian.dnd.d100.D100TableParserSpec" time="0.0"/>
+  <testcase name="has the correct attributes set" classname="com.christian.dnd.d100.D100TableParserSpec" time="0.0"/>
+  <testcase name="has the correct attributes set" classname="com.christian.dnd.d100.D100TableParserSpec" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
