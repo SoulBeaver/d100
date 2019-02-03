@@ -17,20 +17,15 @@ class RollMaster(private val random: Random = Random.Default) {
     }
 
     private fun roll(tables: List<Table>, formatter: (String, String) -> String): List<String> {
-        val tableRolls = mutableListOf<String>()
 
-        for (table in tables) {
+        return tables.flatMap { table ->
             val (descriptor, dieSize, results, rollsRequired) = table
 
-            val rollResults = Array(rollsRequired) { results[random.nextInt(dieSize)] }
-
-            (0 until rollsRequired).map {
-                formatter(descriptor, rollResults[it])
-            }.forEach {
-                tableRolls.add(it)
+            Array(rollsRequired) {
+                results[random.nextInt(dieSize)]
+            }.map { rollResult ->
+                formatter(descriptor, rollResult)
             }
         }
-
-        return tableRolls
     }
 }

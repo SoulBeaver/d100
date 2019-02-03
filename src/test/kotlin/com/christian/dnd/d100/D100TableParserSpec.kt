@@ -1,7 +1,9 @@
 package com.christian.dnd.d100
 
-import com.christian.dnd.d100.parsers.RangeTableParser
-import com.christian.dnd.d100.parsers.SimpleTableParser
+import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
+import com.christian.dnd.d100.parsers.content.RangeTableContentParser
+import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
+import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
@@ -9,7 +11,17 @@ import java.io.File
 
 
 class D100TableParserSpec: Spek({
-    val parser = D100TableParser(SimpleTableParser(), RangeTableParser())
+    val simpleTableContentParser = SimpleTableContentParser()
+    val rangeTableContentParser = RangeTableContentParser()
+
+    val structuredTableBlockParser = StructuredTableBlockParser(
+        simpleTableContentParser,
+        rangeTableContentParser
+    )
+    val fileIsTableBlockParser =
+        FileIsTableBlockParser(simpleTableContentParser, rangeTableContentParser)
+
+    val parser = D100TableParser(structuredTableBlockParser, fileIsTableBlockParser)
 
     group("parsing slime") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/slime").toURI())

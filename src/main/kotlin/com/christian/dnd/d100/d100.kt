@@ -1,11 +1,12 @@
 package com.christian.dnd.d100
 
-import com.christian.dnd.d100.parsers.RangeTableParser
-import com.christian.dnd.d100.parsers.SimpleTableParser
+import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
+import com.christian.dnd.d100.parsers.content.RangeTableContentParser
+import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
+import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
 import java.io.File
-import java.util.regex.Pattern
 
 class D100ArgParser(parser: ArgParser) {
     val silent by parser.flagging(
@@ -25,7 +26,16 @@ fun main(args: Array<String>)  = mainBody {
     val d100File = commandLineParser.file
     val runSilently = commandLineParser.silent
 
-    val tables = D100TableParser(SimpleTableParser(), RangeTableParser()).parse(d100File)
+    val simpleTableContentParser = SimpleTableContentParser()
+    val rangeTableContentParser = RangeTableContentParser()
+
+    val tables = D100TableParser(
+        StructuredTableBlockParser(
+            simpleTableContentParser,
+            rangeTableContentParser
+        ),
+        FileIsTableBlockParser(simpleTableContentParser, rangeTableContentParser)
+    ).parse(d100File)
 
     if (!runSilently) {
         RollMaster().rollWithDescriptor(tables).forEach { println(it) }
