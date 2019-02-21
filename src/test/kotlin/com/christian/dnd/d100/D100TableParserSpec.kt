@@ -185,4 +185,44 @@ class D100TableParserSpec: Spek({
             }
         }
     }
+
+    group("parsing pixies") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/pixies").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            val wingsTable = tables[0]
+
+            wingsTable.apply {
+                descriptor shouldEqual "This pixie has wings like"
+                dieSize shouldEqual 6
+                rollsRequired shouldEqual 1
+
+                results shouldContain "a wren."
+                results shouldContain "a moth."
+            }
+
+            val hairTable = tables[1]
+
+            hairTable.apply {
+                descriptor shouldEqual "This pixie has hair like"
+                dieSize shouldEqual 6
+                rollsRequired shouldEqual 1
+
+                results shouldContain "a lamb."
+                results shouldContain "a tarantula."
+            }
+
+            val aidTable = tables[5]
+
+            aidTable.apply {
+                descriptor shouldEqual "This pixie can call for aid on"
+                dieSize shouldEqual 6
+                rollsRequired shouldEqual 1
+
+                results shouldContain "its superiors among the fey."
+                results shouldContain "swarms of fellow pixies."
+            }
+        }
+    }
 })
