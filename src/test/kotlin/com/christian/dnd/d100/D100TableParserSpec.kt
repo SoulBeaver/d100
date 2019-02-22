@@ -8,11 +8,14 @@ import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import java.io.File
+import kotlin.random.Random
 
 
 class D100TableParserSpec: Spek({
-    val simpleTableContentParser = SimpleTableContentParser()
-    val rangeTableContentParser = RangeTableContentParser()
+    val diceExpressionEvaluator = DiceExpressionEvaluator(Random(0))
+
+    val simpleTableContentParser = SimpleTableContentParser(diceExpressionEvaluator)
+    val rangeTableContentParser = RangeTableContentParser(diceExpressionEvaluator)
 
     val structuredTableBlockParser = StructuredTableBlockParser(
         simpleTableContentParser,
@@ -36,7 +39,7 @@ class D100TableParserSpec: Spek({
                 rollsRequired shouldEqual 1
 
                 results shouldContain "Is red. Its touch is burning hot."
-                results shouldContain "Is grey. It attacks by exploding and then reforming itself 1d4 rounds later."
+                results shouldContain "Is grey. It attacks by exploding and then reforming itself 2 rounds later."
             }
 
             val secondTable = tables[1]
@@ -162,7 +165,7 @@ class D100TableParserSpec: Spek({
                 dieSize shouldEqual 85
                 rollsRequired shouldEqual 1
 
-                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 1d4 hours."
+                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 3 hours."
                 results shouldContain "Plant Growth. Plants in the storm's area grow to gargantuan size for one year. A creature moving through an effected area must spend 4 feet of movement for every 1 foot it wishes to move."
             }
         }
