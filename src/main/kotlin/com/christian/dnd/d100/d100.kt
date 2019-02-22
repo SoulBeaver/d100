@@ -31,8 +31,10 @@ fun main(args: Array<String>)  = mainBody {
     val d100File = commandLineParser.file
     val runSilently = commandLineParser.silent
 
-    val simpleTableContentParser = SimpleTableContentParser()
-    val rangeTableContentParser = RangeTableContentParser()
+    val diceExpressionEvaluator = DiceExpressionEvaluator()
+
+    val simpleTableContentParser = SimpleTableContentParser(diceExpressionEvaluator)
+    val rangeTableContentParser = RangeTableContentParser(diceExpressionEvaluator)
 
     val tables = D100TableParser(
         StructuredTableBlockParser(

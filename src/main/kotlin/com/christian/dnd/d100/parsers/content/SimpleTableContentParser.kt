@@ -1,10 +1,13 @@
 package com.christian.dnd.d100.parsers.content
 
+import com.christian.dnd.d100.DiceExpressionEvaluator
+
 /**
  * Maps a list of die results to a list with some scrubbing in between.
  *
  */
-class SimpleTableContentParser: TableContentParser {
+class SimpleTableContentParser(private val diceExpressionEvaluator: DiceExpressionEvaluator): TableContentParser {
+
     override fun parse(tableContents: List<String>): List<String> {
         return tableContents
             .asSequence()
@@ -21,6 +24,7 @@ class SimpleTableContentParser: TableContentParser {
              * Is red. Its touch is burning hot.
              */
             .map { it.replace("\\d+\\.?\\t".toRegex(), "") }
+            .map { diceExpressionEvaluator.evaluate(it) }
             .toList()
     }
 }
