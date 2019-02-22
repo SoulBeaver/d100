@@ -118,3 +118,19 @@ Given a file `specialWeather` with the following contents:
 Running with `d100 specialWeather -s` will return
 
 > Betwixting Mist. All creatures must make a DC 12 Wisdom saving throw or become confused, as per the Confusion spell, for 2d4 hours. Spellcasters must make the same saving throw, however with a DC of 16. Should a spell caster fail their save, their spells are replaced with spells randomly chosen by the DM. Spellcasters are affected until they complete a long rest.
+
+### Dice rolls in table results
+
+If you roll on a table that has dice expressions in their results, e.g.
+
+```
+d4 trinkets
+A pin cushion in the shape of a heart. 1d6 + 6 pins are pushed into it.
+A rectangular prism with 2d8 buttons on it, each a different color.
+A small metal box filled with d10 exotic foreign coins
+A series of 2d4 vials in a wooden box, each filled with a bright green liquid.
+```
+
+The script will automatically roll those dice for you as well, giving you a result like
+
+`A series of 3 vials in a wooden box, each filled with a bright green liquid.`
