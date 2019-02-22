@@ -1,14 +1,19 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.model.Table
+import com.christian.dnd.d100.model.TableHeader
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldContainAll
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
-class RollMasterSpec: Spek({
+class RollMasterSpec : Spek({
     group("rolling a single table with a single entry") {
         val tables = listOf(
-            Table("This slime's colour:", 1, listOf("red"), 1)
+            Table(
+                TableHeader(1, 1, "This slime's colour:"),
+                listOf("red")
+            )
         )
 
         test("has descriptor and result") {
@@ -18,11 +23,35 @@ class RollMasterSpec: Spek({
 
     group("rolling a single table with multiple entries") {
         val tables = listOf(
-            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 1)
+            Table(
+                TableHeader(1, 20, "This slime's colour:"),
+                listOf(
+                    "red",
+                    "green",
+                    "blue",
+                    "teal",
+                    "cyan",
+                    "purple",
+                    "yellow",
+                    "brown",
+                    "black",
+                    "white",
+                    "pink",
+                    "orange",
+                    "lime",
+                    "gray",
+                    "eggshell",
+                    "bronze",
+                    "copper",
+                    "sherwood green",
+                    "oxblood",
+                    "fritzrot"
+                )
+            )
         )
 
         test("picks a result determined by fair random die roll") {
-            val rollMaster = RollMaster(object: Random() {
+            val rollMaster = RollMaster(object : Random() {
                 public override fun nextBits(bitCount: Int): Int = 0
 
                 public override fun nextInt(until: Int): Int {
@@ -36,7 +65,31 @@ class RollMasterSpec: Spek({
 
     group("rolling a single table with multiple entries multiple times") {
         val tables = listOf(
-            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 5)
+            Table(
+                TableHeader(5, 20, "This slime's colour:"),
+                listOf(
+                    "red",
+                    "green",
+                    "blue",
+                    "teal",
+                    "cyan",
+                    "purple",
+                    "yellow",
+                    "brown",
+                    "black",
+                    "white",
+                    "pink",
+                    "orange",
+                    "lime",
+                    "gray",
+                    "eggshell",
+                    "bronze",
+                    "copper",
+                    "sherwood green",
+                    "oxblood",
+                    "fritzrot"
+                )
+            )
         )
 
         test("rolls the same table multiple times") {
@@ -54,9 +107,39 @@ class RollMasterSpec: Spek({
 
     group("rolling multiple tables of varying sizes") {
         val tables = listOf(
-            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 1),
-            Table("This slime’s texture:", 4, listOf("smooth", "marbled", "cracked", "viscous"), 1),
-            Table("This slime's odor:", 6, listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive"), 1)
+            Table(
+                TableHeader(1, 20, "This slime's colour:"),
+                listOf(
+                    "red",
+                    "green",
+                    "blue",
+                    "teal",
+                    "cyan",
+                    "purple",
+                    "yellow",
+                    "brown",
+                    "black",
+                    "white",
+                    "pink",
+                    "orange",
+                    "lime",
+                    "gray",
+                    "eggshell",
+                    "bronze",
+                    "copper",
+                    "sherwood green",
+                    "oxblood",
+                    "fritzrot"
+                )
+            ),
+            Table(
+                TableHeader(1, 4, "This slime's texture:"),
+                listOf("smooth", "marbled", "cracked", "viscous")
+            ),
+            Table(
+                TableHeader(1, 6, "This slime's odor:"),
+                listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive")
+            )
         )
 
         test("rolls each table once") {
@@ -64,7 +147,7 @@ class RollMasterSpec: Spek({
 
             rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
-                "This slime’s texture: marbled",
+                "This slime's texture: marbled",
                 "This slime's odor: oily"
             )
         }
@@ -72,9 +155,39 @@ class RollMasterSpec: Spek({
 
     group("rolling multiple tables of varying sizes a variable number of times") {
         val tables = listOf(
-            Table("This slime's colour:", 20, listOf("red", "green", "blue", "teal", "cyan", "purple", "yellow", "brown", "black", "white", "pink", "orange", "lime", "gray", "eggshell", "bronze", "copper", "sherwood green", "oxblood", "fritzrot"), 1),
-            Table("This slime’s texture:", 4, listOf("smooth", "marbled", "cracked", "viscous"), 3),
-            Table("This slime's odor:", 6, listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive"), 2)
+            Table(
+                TableHeader(1, 20, "This slime's colour:"),
+                listOf(
+                    "red",
+                    "green",
+                    "blue",
+                    "teal",
+                    "cyan",
+                    "purple",
+                    "yellow",
+                    "brown",
+                    "black",
+                    "white",
+                    "pink",
+                    "orange",
+                    "lime",
+                    "gray",
+                    "eggshell",
+                    "bronze",
+                    "copper",
+                    "sherwood green",
+                    "oxblood",
+                    "fritzrot"
+                )
+            ),
+            Table(
+                TableHeader(3, 4, "This slime's texture:"),
+                listOf("smooth", "marbled", "cracked", "viscous")
+            ),
+            Table(
+                TableHeader(2, 6, "This slime's odor:"),
+                listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive")
+            )
         )
 
         test("rolls each table once") {
@@ -82,9 +195,9 @@ class RollMasterSpec: Spek({
 
             rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
-                "This slime’s texture: marbled",
-                "This slime’s texture: viscous",
-                "This slime’s texture: cracked",
+                "This slime's texture: marbled",
+                "This slime's texture: viscous",
+                "This slime's texture: cracked",
                 "This slime's odor: musky",
                 "This slime's odor: corrosive"
             )
@@ -93,11 +206,14 @@ class RollMasterSpec: Spek({
 
     group("rolling a table with quick'n'dirty results silently") {
         val tables = listOf(
-            Table("Armor", 4, listOf("Breastplate", "Chain mail", "Chain shirt", "Half plate"), 1)
+            Table(
+                TableHeader(1, 4, "Armor"),
+                listOf("Breastplate", "Chain mail", "Chain shirt", "Half plate")
+            )
         )
 
         test("returns the result without a descriptor") {
-            val rollMaster = RollMaster(object: Random() {
+            val rollMaster = RollMaster(object : Random() {
                 public override fun nextBits(bitCount: Int): Int = 0
 
                 public override fun nextInt(until: Int): Int {

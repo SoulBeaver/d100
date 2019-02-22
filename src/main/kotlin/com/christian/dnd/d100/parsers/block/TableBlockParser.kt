@@ -1,42 +1,30 @@
 package com.christian.dnd.d100.parsers.block
 
-import com.christian.dnd.d100.D100TableParser.Companion.HEADER_REGEX
-import com.christian.dnd.d100.Table
+import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.content.TableContentParser
+import com.christian.dnd.d100.parsers.header.TableHeaderParser
 
 abstract class TableBlockParser(
     private val simpleTableContentParser: TableContentParser,
-    private val rangeTableContentParser: TableContentParser
+    private val rangeTableContentParser: TableContentParser,
+    private val tableHeaderParsers: List<TableHeaderParser>
 ) {
-
     abstract fun parse(contents: List<String>, filename: String): List<Table>
 
-    protected fun isHeader(line: String) = HEADER_REGEX.matches(line)
+    abstract fun canParse(contents: List<String>): Boolean
 
-    protected fun parseTable(header: String, tableContents: List<String>) = HEADER_REGEX.find(header)!!.groupValues.let {
-        val rollsRequired = if (it[1].isBlank()) 1 else it[1].toInt()
-        val dieSize = if (it[2] == "%") 100 else it[2].toInt()
-        val descriptor = cleanDescriptor(it[3])
+    protected fun isHeader(line: String) = tableHeaderParsers.any { parser -> parser.isHeader(line) }
 
-        val results = parseResults(tableContents, dieSize)
+    protected fun parseTable(header: String, tableContents: List<String>): Table {
+        val tableHeader = tableHeaderParsers
+            .first { parser -> parser.isHeader(header) }
+            .parse(header)
 
-        Table(descriptor, dieSize, results, rollsRequired)
-    }
+        val results = when (tableHeader.dieSize) {
+            tableContents.size -> simpleTableContentParser.parse(tableContents)
+            else -> rangeTableContentParser.parse(tableContents)
+        }
 
-    private fun parseResults(tableContents: List<String>, dieSize: Int) = when (dieSize) {
-        tableContents.size -> simpleTableContentParser.parse(tableContents)
-        else -> rangeTableContentParser.parse(tableContents)
-    }
-
-    private fun cleanDescriptor(descriptor: String) = descriptor
-        .trim()
-        .replace("...", "")
-        .replace("…", "")
-        .removePrefix("\t")
-        .removePrefix("|")
-        .trim()
-
-    companion object {
-        protected data class TableBlock(val table: Table, val linesRead: Int)
+        return Table(tableHeader, results)
     }
 }

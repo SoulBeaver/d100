@@ -1,9 +1,12 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
 import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
 import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
+import com.christian.dnd.d100.parsers.header.BeginningTableHeaderParser
+import com.christian.dnd.d100.parsers.header.EndingTableHeaderParser
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
@@ -27,23 +30,35 @@ class D100ArgParser(parser: ArgParser) {
 
 fun main(args: Array<String>)  = mainBody {
     val commandLineParser = ArgParser(args).parseInto(::D100ArgParser)
-
     val d100File = commandLineParser.file
     val runSilently = commandLineParser.silent
 
     val diceExpressionEvaluator = DiceExpressionEvaluator()
+    val tableHeaderParsers = listOf(
+        BeginningTableHeaderParser(),
+        EndingTableHeaderParser()
+    )
 
     val simpleTableContentParser = SimpleTableContentParser(diceExpressionEvaluator)
     val rangeTableContentParser = RangeTableContentParser(diceExpressionEvaluator)
 
-    val tables = D100TableParser(
+    val tables = D100TableParser(listOf(
         StructuredTableBlockParser(
             simpleTableContentParser,
-            rangeTableContentParser
+            rangeTableContentParser,
+            tableHeaderParsers
         ),
-        FileIsTableBlockParser(simpleTableContentParser, rangeTableContentParser)
+        FileIsTableBlockParser(
+            simpleTableContentParser,
+            rangeTableContentParser,
+            tableHeaderParsers
+        ))
     ).parse(d100File)
 
+    roll(runSilently, commandLineParser.rolls, tables)
+}
+
+private fun roll(runSilently: Boolean, rolls: Int, tables: List<Table>) {
     val rollMethod = {
         if (!runSilently) {
             RollMaster().rollWithDescriptor(tables)
@@ -52,8 +67,8 @@ fun main(args: Array<String>)  = mainBody {
         }
     }
 
-    (0 until commandLineParser.rolls).forEach {
-        if (commandLineParser.rolls > 1) {
+    (0 until rolls).forEach {
+        if (rolls > 1) {
             println("Roll $it:")
         }
 

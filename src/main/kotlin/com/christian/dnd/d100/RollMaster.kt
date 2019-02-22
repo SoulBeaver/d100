@@ -1,5 +1,6 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.model.Table
 import kotlin.random.Random
 
 class RollMaster(private val random: Random = Random.Default) {
@@ -19,10 +20,10 @@ class RollMaster(private val random: Random = Random.Default) {
     private fun roll(tables: List<Table>, formatter: (String, String) -> String): List<String> {
 
         return tables.flatMap { table ->
-            val (descriptor, dieSize, results, rollsRequired) = table
+            val (rollsRequired, dieSize, descriptor) = table.header
 
             Array(rollsRequired) {
-                results[random.nextInt(dieSize)]
+                table.results[random.nextInt(dieSize)]
             }.map { rollResult ->
                 formatter(descriptor, rollResult)
             }
