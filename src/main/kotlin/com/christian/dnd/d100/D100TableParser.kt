@@ -11,6 +11,7 @@ class D100TableParser(
     fun parse(d100Table: File): List<Table> {
         val filename = d100Table.nameWithoutExtension
         val contents = d100Table.readLines()
+            .map { line -> line.replace("\u200B", "") }
             .filter(String::isNotBlank)
 
         return when {

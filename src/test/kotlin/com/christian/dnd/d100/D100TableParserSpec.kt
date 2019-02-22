@@ -225,4 +225,44 @@ class D100TableParserSpec: Spek({
             }
         }
     }
+
+    group("parsing ale") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/ale").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            val drinkTypeTable = tables[0]
+
+            drinkTypeTable.apply {
+                descriptor shouldEqual "The Drink is:"
+                dieSize shouldEqual 20
+                rollsRequired shouldEqual 1
+
+                results shouldContain "Hoppy, pale ale."
+                results shouldContain "A thick black liqueur brewed with herbs from the local area."
+            }
+
+            val tasteTable = tables[2]
+
+            tasteTable.apply {
+                descriptor shouldEqual "The drink tastes:"
+                dieSize shouldEqual 8
+                rollsRequired shouldEqual 1
+
+                results shouldContain "Bitter.."
+                results shouldContain "Minty."
+            }
+
+            val servedTable = tables[5]
+
+            servedTable.apply {
+                descriptor shouldEqual "The drink is served with"
+                dieSize shouldEqual 6
+                rollsRequired shouldEqual 1
+
+                results shouldContain "Small bowls of nuts."
+                results shouldContain "1 Copper Piece, in some strange local tradition."
+            }
+        }
+    }
 })
