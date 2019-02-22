@@ -5,18 +5,19 @@ Roll dX tables using this nifty little script.
 ## Usage
 
 ```$bash
-usage: [-h] [-s] FILE
+usage: [-h] [-s] [-r ROLLS] FILE
 
 optional arguments:
-  -h,        show this help message and exit
-  --help
+  -h, --help      show this help message and exit
 
-  -s,        Don't display descriptors, only the results.
-  --silent
+  -s, --silent    Don't display descriptors, only the results.
+
+  -r ROLLS,       How many results to roll.
+  --rolls ROLLS
 
 
 positional arguments:
-  FILE       d100 file to roll from.
+  FILE            d100 file to roll from.
 ```
 
 ## Examples
