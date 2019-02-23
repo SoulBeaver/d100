@@ -1,8 +1,10 @@
 package com.christian.dnd.d100.parsers.block
 
 import com.christian.dnd.d100.model.Table
+import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.parsers.content.TableContentParser
 import com.christian.dnd.d100.parsers.header.TableHeaderParser
+import com.christian.dnd.d100.utils.takeWhileUpToMax
 
 /**
  * Assumes that the file has a structure wherein one or more tables will have a descriptor and a list of die roll results.
@@ -21,7 +23,7 @@ class StructuredTableBlockParser(
         // Workaround for compiler bug that crashes if you replace the if expression with a ?.let {}
         val header = contents.firstOrNull { line -> isHeader(line) }
         return if (header != null) {
-            val tableBlock = parseTableBlock(header, contents.subList(contents.indexOf(header) + 1, contents.size))
+            val tableBlock = parseTableBlock(parseTableHeader(header), contents.subList(contents.indexOf(header) + 1, contents.size))
 
             parseRecursively(contents.subList(tableBlock.linesRead + 1, contents.size), filename, tablesAcc + tableBlock.table)
         } else {
@@ -31,14 +33,12 @@ class StructuredTableBlockParser(
 
     override fun canParse(contents: List<String>) = contents.any { line -> isHeader(line) }
 
-    private fun parseTableBlock(header: String, contents: List<String>) =
-        contents.takeWhile { line -> !isHeader(line) }
+    private fun parseTableBlock(header: TableHeader, contents: List<String>): TableBlock {
+        return contents.takeWhileUpToMax(header.dieSize) { line -> !isHeader(line) }
             .let { tableContents ->
-                TableBlock(
-                    parseTable(header, tableContents),
-                    tableContents.size
-                )
+                TableBlock(parseTable(header, tableContents), tableContents.size)
             }
+    }
 }
 
 private data class TableBlock(val table: Table, val linesRead: Int)

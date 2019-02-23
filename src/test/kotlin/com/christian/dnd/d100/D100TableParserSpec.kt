@@ -7,15 +7,22 @@ import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
 import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
 import com.christian.dnd.d100.parsers.header.BeginningTableHeaderParser
 import com.christian.dnd.d100.parsers.header.EndingTableHeaderParser
+import io.mockk.every
+import io.mockk.mockk
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldNotContain
 import org.spekframework.spek2.Spek
 import java.io.File
-import kotlin.random.Random
 
 
 class D100TableParserSpec: Spek({
-    val diceExpressionEvaluator = DiceExpressionEvaluator(Random(0))
+    val diceExpressionEvaluator = mockk<DiceExpressionEvaluator>()
+    // Return the original string argument without evaluating any dice expressions.
+    every {
+        diceExpressionEvaluator.evaluate(any())
+    } answers { root -> root.invocation.args[0].toString() }
+
     val tableHeaderParsers = listOf(
         BeginningTableHeaderParser(),
         EndingTableHeaderParser()
@@ -47,7 +54,7 @@ class D100TableParserSpec: Spek({
                 header.validate("This slime’s colour:", 20, 1)
 
                 results shouldContain "Is red. Its touch is burning hot."
-                results shouldContain "Is grey. It attacks by exploding and then reforming itself 2 rounds later."
+                results shouldContain "Is grey. It attacks by exploding and then reforming itself 1d4 rounds later."
             }
 
             val slimeTextureTable = tables[1]
@@ -146,7 +153,7 @@ class D100TableParserSpec: Spek({
             weatherTable.apply {
                 header.validate("specialWeather", 85, 1)
 
-                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 3 hours."
+                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 1d4 hours."
                 results shouldContain "Plant Growth. Plants in the storm's area grow to gargantuan size for one year. A creature moving through an effected area must spend 4 feet of movement for every 1 foot it wishes to move."
             }
         }
@@ -225,6 +232,39 @@ class D100TableParserSpec: Spek({
 
                 results shouldContain "Small bowls of nuts."
                 results shouldContain "1 Copper Piece, in some strange local tradition."
+            }
+        }
+    }
+
+    group("parsing raiders") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/raiders").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            val extortTable = tables[0]
+            extortTable.apply {
+                header.validate("", 4, 1)
+
+                results shouldContain "[2d10] CP per week from each family"
+                results shouldContain "[1d6] SP per month from each family"
+                results shouldNotContain "They also demand..."
+            }
+
+            val tormentTable = tables[2]
+            tormentTable.apply {
+                header.validate("", 20, 1)
+
+                results shouldContain "making us burn our clothing and shave our heads"
+                results shouldContain "making us watch as they destroy our market stands"
+                results shouldNotContain "If we disobey or resist, they have threatened to..."
+            }
+
+            val elseTable = tables[4]
+            elseTable.apply {
+                header.validate("", 20, 1)
+
+                results shouldContain "We've had enough, and are preparing an ambush."
+                results shouldContain "Just when we thought things couldn't get worse, one of our daughters was found murdered and brutalized. Enough is enough!"
             }
         }
     }

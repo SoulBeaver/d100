@@ -1,6 +1,7 @@
 package com.christian.dnd.d100.parsers.block
 
 import com.christian.dnd.d100.model.Table
+import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.parsers.content.TableContentParser
 import com.christian.dnd.d100.parsers.header.TableHeaderParser
 
@@ -15,11 +16,9 @@ abstract class TableBlockParser(
 
     protected fun isHeader(line: String) = tableHeaderParsers.any { parser -> parser.isHeader(line) }
 
-    protected fun parseTable(header: String, tableContents: List<String>): Table {
-        val tableHeader = tableHeaderParsers
-            .first { parser -> parser.isHeader(header) }
-            .parse(header)
+    protected fun parseTableHeader(header: String) = tableHeaderParsers.first { parser -> parser.isHeader(header) }.parse(header)
 
+    protected fun parseTable(tableHeader: TableHeader, tableContents: List<String>): Table {
         val results = when (tableHeader.dieSize) {
             tableContents.size -> simpleTableContentParser.parse(tableContents)
             else -> rangeTableContentParser.parse(tableContents)
