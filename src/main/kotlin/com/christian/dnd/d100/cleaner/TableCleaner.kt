@@ -28,18 +28,18 @@ class TableCleaner {
             .asSequence()
             .map { line ->
                 line.trim()
-                /*
-                 * Trims the #-bullet from a result.
-                 *
-                 * Input:
-                 * 1	Is red. Its touch is burning hot.
-                 * Output:
-                 * Is red. Its touch is burning hot.
-                 */
-                .replace("...", "")
-                .replace("…", "")
-                .replace("""^\d+[.:;\-)\t]\s*""".toRegex(), "")
-                .trim()
+                    .replace("...", "")
+                    .replace("…", "")
+                        /*
+                    * Trims the #-bullet from a result.
+                    *
+                    * Input:
+                    * 1	Is red. Its touch is burning hot.
+                    * Output:
+                    * Is red. Its touch is burning hot.
+                    */
+                    .replace("""^\d+[.:;\-)\t]\s*""".toRegex(), "")
+                    .trim()
             }.toList()
     }
 }
