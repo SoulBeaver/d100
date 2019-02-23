@@ -1,5 +1,7 @@
 # d100
 
+[![CircleCI](https://circleci.com/gh/SoulBeaver/d100/tree/master.svg?style=svg)](https://circleci.com/gh/SoulBeaver/d100/tree/master)
+
 Roll dX tables using this nifty little script.
 
 ## Usage
