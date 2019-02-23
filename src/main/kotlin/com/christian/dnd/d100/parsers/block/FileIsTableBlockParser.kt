@@ -13,7 +13,7 @@ class FileIsTableBlockParser(
     tableHeaderParsers: List<TableHeaderParser>
 ): TableBlockParser(simpleTableContentParser, rangeTableContentParser, tableHeaderParsers) {
 
-    override fun parse(contents: List<String>, filename: String): List<Table> {
+    override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
         val tableHeader = parseTableHeader("d${contents.size} $filename")
         return listOf(parseTable(tableHeader, contents))
     }

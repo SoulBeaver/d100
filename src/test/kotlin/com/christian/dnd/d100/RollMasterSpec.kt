@@ -10,7 +10,7 @@ import kotlin.random.Random
 class RollMasterSpec : Spek({
     group("rolling a single table with a single entry") {
         val tables = listOf(
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 1, "This slime's colour:"),
                 listOf("red")
             )
@@ -23,7 +23,7 @@ class RollMasterSpec : Spek({
 
     group("rolling a single table with multiple entries") {
         val tables = listOf(
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 20, "This slime's colour:"),
                 listOf(
                     "red",
@@ -65,7 +65,7 @@ class RollMasterSpec : Spek({
 
     group("rolling a single table with multiple entries multiple times") {
         val tables = listOf(
-            Table(
+            Table.PreppedTable(
                 TableHeader(5, 20, "This slime's colour:"),
                 listOf(
                     "red",
@@ -107,7 +107,7 @@ class RollMasterSpec : Spek({
 
     group("rolling multiple tables of varying sizes") {
         val tables = listOf(
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 20, "This slime's colour:"),
                 listOf(
                     "red",
@@ -132,11 +132,11 @@ class RollMasterSpec : Spek({
                     "fritzrot"
                 )
             ),
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 4, "This slime's texture:"),
                 listOf("smooth", "marbled", "cracked", "viscous")
             ),
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 6, "This slime's odor:"),
                 listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive")
             )
@@ -155,7 +155,7 @@ class RollMasterSpec : Spek({
 
     group("rolling multiple tables of varying sizes a variable number of times") {
         val tables = listOf(
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 20, "This slime's colour:"),
                 listOf(
                     "red",
@@ -180,11 +180,11 @@ class RollMasterSpec : Spek({
                     "fritzrot"
                 )
             ),
-            Table(
+            Table.PreppedTable(
                 TableHeader(3, 4, "This slime's texture:"),
                 listOf("smooth", "marbled", "cracked", "viscous")
             ),
-            Table(
+            Table.PreppedTable(
                 TableHeader(2, 6, "This slime's odor:"),
                 listOf("musky", "sweet", "like strawberries", "oily", "sulphuric", "corrosive")
             )
@@ -206,7 +206,7 @@ class RollMasterSpec : Spek({
 
     group("rolling a table with quick'n'dirty results silently") {
         val tables = listOf(
-            Table(
+            Table.PreppedTable(
                 TableHeader(1, 4, "Armor"),
                 listOf("Breastplate", "Chain mail", "Chain shirt", "Half plate")
             )

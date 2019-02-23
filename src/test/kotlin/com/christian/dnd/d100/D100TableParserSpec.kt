@@ -1,5 +1,7 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.cleaner.TableCleaner
+import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
@@ -23,13 +25,15 @@ class D100TableParserSpec: Spek({
         diceExpressionEvaluator.evaluate(any())
     } answers { root -> root.invocation.args[0].toString() }
 
+    val tableCleaner = TableCleaner()
+
     val tableHeaderParsers = listOf(
         BeginningTableHeaderParser(),
         EndingTableHeaderParser()
     )
 
-    val simpleTableContentParser = SimpleTableContentParser(diceExpressionEvaluator)
-    val rangeTableContentParser = RangeTableContentParser(diceExpressionEvaluator)
+    val simpleTableContentParser = SimpleTableContentParser()
+    val rangeTableContentParser = RangeTableContentParser()
 
     val structuredTableBlockParser = StructuredTableBlockParser(
         simpleTableContentParser,
@@ -42,7 +46,7 @@ class D100TableParserSpec: Spek({
         tableHeaderParsers
     )
 
-    val parser = D100TableParser(listOf(structuredTableBlockParser, fileIsTableBlockParser))
+    val parser = D100TableParser(listOf(structuredTableBlockParser, fileIsTableBlockParser), diceExpressionEvaluator, tableCleaner)
 
     group("parsing slime") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/slime").toURI())
@@ -51,7 +55,7 @@ class D100TableParserSpec: Spek({
         test("has the correct attributes set") {
             val slimeColorTable = tables[0]
             slimeColorTable.apply {
-                header.validate("This slime’s colour:", 20, 1)
+                header.validate("This slime’s colour", 20, 1)
 
                 results shouldContain "Is red. Its touch is burning hot."
                 results shouldContain "Is grey. It attacks by exploding and then reforming itself 1d4 rounds later."
@@ -59,7 +63,7 @@ class D100TableParserSpec: Spek({
 
             val slimeTextureTable = tables[1]
             slimeTextureTable.apply {
-                header.validate("This slime’s texture:", 20, 1)
+                header.validate("This slime’s texture", 20, 1)
 
                 results shouldContain "Is oily. It’s slippery and moves faster than other slimes."
                 results shouldContain "Is ichorous. The slime regenerates damage over time."
@@ -67,7 +71,7 @@ class D100TableParserSpec: Spek({
 
             val slimeUseTable = tables[4]
             slimeUseTable.apply {
-                header.validate("Extracts from this slime can be used to:", 20, 1)
+                header.validate("Extracts from this slime can be used to", 20, 1)
 
                 results shouldContain "Disguise one’s scent."
                 results shouldContain "Treat leather and textiles into superlative armours."
@@ -212,7 +216,7 @@ class D100TableParserSpec: Spek({
         test("has the correct attributes set") {
             val typeTable = tables[0]
             typeTable.apply {
-                header.validate("The Drink is:", 20, 1)
+                header.validate("The Drink is", 20, 1)
 
                 results shouldContain "Hoppy, pale ale."
                 results shouldContain "A thick black liqueur brewed with herbs from the local area."
@@ -243,7 +247,7 @@ class D100TableParserSpec: Spek({
         test("has the correct attributes set") {
             val extortTable = tables[0]
             extortTable.apply {
-                header.validate("", 4, 1)
+                header.validate("The raiders are extorting our village for", 4, 1)
 
                 results shouldContain "[2d10] CP per week from each family"
                 results shouldContain "[1d6] SP per month from each family"
@@ -252,7 +256,7 @@ class D100TableParserSpec: Spek({
 
             val tormentTable = tables[2]
             tormentTable.apply {
-                header.validate("", 20, 1)
+                header.validate("Worse, they routinely torment us by", 20, 1)
 
                 results shouldContain "making us burn our clothing and shave our heads"
                 results shouldContain "making us watch as they destroy our market stands"
@@ -261,7 +265,7 @@ class D100TableParserSpec: Spek({
 
             val elseTable = tables[4]
             elseTable.apply {
-                header.validate("", 20, 1)
+                header.validate("What Else?", 20, 1)
 
                 results shouldContain "We've had enough, and are preparing an ambush."
                 results shouldContain "Just when we thought things couldn't get worse, one of our daughters was found murdered and brutalized. Enough is enough!"

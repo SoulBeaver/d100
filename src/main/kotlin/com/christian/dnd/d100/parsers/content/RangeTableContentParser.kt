@@ -1,6 +1,6 @@
 package com.christian.dnd.d100.parsers.content
 
-import com.christian.dnd.d100.DiceExpressionEvaluator
+import com.christian.dnd.d100.model.TableResults
 
 /**
  * Transforms a table's die ranges into a table that has one entry up to its die size.
@@ -25,24 +25,18 @@ import com.christian.dnd.d100.DiceExpressionEvaluator
  * Chain shirt
  * Chain shirt
  */
-class RangeTableContentParser(private val diceExpressionEvaluator: DiceExpressionEvaluator): TableContentParser {
-
+class RangeTableContentParser: TableContentParser {
     private val rangeRegex = """(\d+)\s*[-.]+\s*(\d+)(.*)""".toRegex(RegexOption.IGNORE_CASE)
 
-    override fun parse(tableContents: List<String>): List<String> {
+    override fun parse(tableContents: List<String>): TableResults {
         return tableContents.flatMap { line ->
             val matches = rangeRegex.find(line)!!.groupValues
 
             val rangeStart = matches[1].toInt()
             val rangeEnd = matches[2].toInt()
-            val result = clean(matches[3])
+            val result = matches[3]
 
             (rangeStart..rangeEnd).map { result }
         }
     }
-
-    private fun clean(result: String) = diceExpressionEvaluator.evaluate(result
-        .trim()
-        .removePrefix("\t")
-        .removeSuffix("\t"))
 }

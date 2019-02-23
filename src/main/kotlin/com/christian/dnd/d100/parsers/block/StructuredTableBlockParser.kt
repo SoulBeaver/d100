@@ -15,20 +15,25 @@ class StructuredTableBlockParser(
     tableHeaderParsers: List<TableHeaderParser>
 ) : TableBlockParser(simpleTableContentParser, rangeTableContentParser, tableHeaderParsers) {
 
-    override fun parse(contents: List<String>, filename: String): List<Table> {
+    override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
         return parseRecursively(contents, filename)
     }
 
-    private tailrec fun parseRecursively(contents: List<String>, filename: String, tablesAcc: List<Table> = emptyList()): List<Table> {
-        // Workaround for compiler bug that crashes if you replace the if expression with a ?.let {}
-        val header = contents.firstOrNull { line -> isHeader(line) }
-        return if (header != null) {
-            val tableBlock = parseTableBlock(parseTableHeader(header), contents.subList(contents.indexOf(header) + 1, contents.size))
+    // We are intentionally not tailrecursive because of a kotlin compiler error in 1.3.X (https://youtrack.jetbrains.com/issue/KT-14961)
+    private fun parseRecursively(contents: List<String>, filename: String, tablesAcc: List<Table.DirtyTable> = emptyList()): List<Table.DirtyTable> {
+        return parseTableHeaderBlock(contents)?.let { tableHeaderBlock ->
+            val (tableHeader, _, headerLine) = tableHeaderBlock
 
-            parseRecursively(contents.subList(tableBlock.linesRead + 1, contents.size), filename, tablesAcc + tableBlock.table)
-        } else {
-            tablesAcc
-        }
+            val tableBlock = parseTableBlock(
+                tableHeader,
+                contents.subList(contents.indexOf(headerLine) + 1, contents.size)
+            )
+
+            parseRecursively(
+                contents.subList(tableBlock.linesRead + tableHeaderBlock.linesRead , contents.size),
+                filename,
+                tablesAcc + tableBlock.table)
+        } ?: tablesAcc
     }
 
     override fun canParse(contents: List<String>) = contents.any { line -> isHeader(line) }
@@ -39,6 +44,22 @@ class StructuredTableBlockParser(
                 TableBlock(parseTable(header, tableContents), tableContents.size)
             }
     }
+
+    private fun parseTableHeaderBlock(contents: List<String>): TableHeaderBlock? {
+        return contents.firstOrNull { line -> isHeader(line) }
+            ?.let { headerLine ->
+                return when {
+                    parseTableHeader(headerLine).descriptor.isBlank() -> {
+                        val displacedHeaderElements = contents.takeWhile { line -> !isHeader(line) }
+                        val joinedHeaderLine = "$headerLine ${displacedHeaderElements.joinToString()}"
+
+                        TableHeaderBlock(parseTableHeader(joinedHeaderLine), displacedHeaderElements.size + 1, headerLine)
+                    }
+                    else -> TableHeaderBlock(parseTableHeader(headerLine), 1, headerLine)
+                }
+            }
+    }
 }
 
-private data class TableBlock(val table: Table, val linesRead: Int)
+private data class TableHeaderBlock(val tableHeader: TableHeader, val linesRead: Int, val headerLine: String)
+private data class TableBlock(val table: Table.DirtyTable, val linesRead: Int)

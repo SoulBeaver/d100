@@ -12,18 +12,9 @@ class BeginningTableHeaderParser: TableHeaderParser("""\(?(\d*)d(\d+|%)\)?(.*)""
         return headerRegex.find(header)!!.groupValues.let {
             val rollsRequired = if (it[1].isBlank()) 1 else it[1].toInt()
             val dieSize = if (it[2] == "%") 100 else it[2].toInt()
-            val descriptor = cleanDescriptor(it[3])
+            val descriptor = it[3]
 
             TableHeader(rollsRequired, dieSize, descriptor)
         }
-    }
-
-    override fun cleanDescriptor(descriptor: String): String {
-        return super.cleanDescriptor(descriptor)
-            .removePrefix(":")
-            .removePrefix("(")
-            .removePrefix(")")
-            .removePrefix("-")
-            .trim()
     }
 }
