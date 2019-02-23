@@ -4,7 +4,6 @@ import com.christian.dnd.d100.DiceExpressionEvaluator
 
 /**
  * Maps a list of die results to a list with some scrubbing in between.
- *
  */
 class SimpleTableContentParser(private val diceExpressionEvaluator: DiceExpressionEvaluator): TableContentParser {
 

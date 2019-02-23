@@ -6,6 +6,9 @@ import com.christian.dnd.d100.parsers.header.TableHeaderParser
 
 private data class TableBlock(val table: Table, val linesRead: Int)
 
+/**
+ * Assumes that the file has a structure wherein one or more tables will have a descriptor and a list of die roll results.
+ */
 class StructuredTableBlockParser(
     simpleTableContentParser: TableContentParser,
     rangeTableContentParser: TableContentParser,
@@ -13,24 +16,15 @@ class StructuredTableBlockParser(
 ) : TableBlockParser(simpleTableContentParser, rangeTableContentParser, tableHeaderParsers) {
 
     override fun parse(contents: List<String>, filename: String): List<Table> {
-        val tables = mutableListOf<Table>()
+        return parseRecursively(contents, filename)
+    }
 
-        var i = 0
-        while (i < contents.size) {
-            val line = contents[i]
-
-            if (isHeader(line)) {
-                val tableBlock = parseTableBlock(line, contents.subList(i + 1, contents.size))
-
-                tables.add(tableBlock.table)
-
-                i += tableBlock.linesRead
-            } else {
-                i++
-            }
-        }
-
-        return tables
+    private fun parseRecursively(contents: List<String>, filename: String, tablesAcc: List<Table> = emptyList()): List<Table> {
+        return contents.firstOrNull { line -> isHeader(line) }
+            ?.let { header ->
+                val tableBlock = parseTableBlock(header, contents.subList(contents.indexOf(header) + 1, contents.size))
+                parseRecursively(contents.subList(tableBlock.linesRead + 1, contents.size), filename, tablesAcc + tableBlock.table)
+            } ?: tablesAcc
     }
 
     override fun canParse(contents: List<String>) = contents.any { line -> isHeader(line) }

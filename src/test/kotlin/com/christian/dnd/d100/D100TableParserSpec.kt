@@ -37,7 +37,6 @@ class D100TableParserSpec: Spek({
 
     val parser = D100TableParser(listOf(structuredTableBlockParser, fileIsTableBlockParser))
 
-    /*
     group("parsing slime") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/slime").toURI())
         val tables = parser.parse(file)
@@ -198,7 +197,7 @@ class D100TableParserSpec: Spek({
             }
         }
     }
-    */
+
     group("parsing ale") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/ale").toURI())
         val tables = parser.parse(file)
