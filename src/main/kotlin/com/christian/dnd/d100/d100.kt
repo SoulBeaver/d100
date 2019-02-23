@@ -67,9 +67,9 @@ private fun roll(runSilently: Boolean, rolls: Int, tables: List<Table>) {
         }
     }
 
-    (0 until rolls).forEach {
+    (0 until rolls).forEach { roll ->
         if (rolls > 1) {
-            println("Roll $it:")
+            println("Roll $roll:")
         }
 
         rollMethod().forEach { println(it) }

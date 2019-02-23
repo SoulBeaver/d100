@@ -52,9 +52,9 @@ class RollMasterSpec : Spek({
 
         test("picks a result determined by fair random die roll") {
             val rollMaster = RollMaster(object : Random() {
-                public override fun nextBits(bitCount: Int): Int = 0
+                override fun nextBits(bitCount: Int): Int = 0
 
-                public override fun nextInt(until: Int): Int {
+                override fun nextInt(until: Int): Int {
                     return 4
                 }
             })
@@ -214,9 +214,9 @@ class RollMasterSpec : Spek({
 
         test("returns the result without a descriptor") {
             val rollMaster = RollMaster(object : Random() {
-                public override fun nextBits(bitCount: Int): Int = 0
+                override fun nextBits(bitCount: Int): Int = 0
 
-                public override fun nextInt(until: Int): Int {
+                override fun nextInt(until: Int): Int {
                     return 0
                 }
             })
