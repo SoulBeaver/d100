@@ -1,29 +1,28 @@
 package com.christian.dnd.d100.parsers.content
 
-import com.christian.dnd.d100.DiceExpressionEvaluator
+import com.christian.dnd.d100.model.TableResults
 
 /**
- * Maps a list of die results to a list with some scrubbing in between.
+ * Parses a table as-is, considers each line to be a separate entry on the die result table.
+ *
+ * Input:
+ * 1	a wren.
+ * 2	a moth.
+ * 3	a swallow.
+ * 4	a bumblebee.
+ * 5	a flying fish.
+ * 6    	a dragonfly.
+ *
+ * Output:
+ * 1	a wren.
+ * 2	a moth.
+ * 3	a swallow.
+ * 4	a bumblebee.
+ * 5	a flying fish.
+ * 6    	a dragonfly.
  */
-class SimpleTableContentParser(private val diceExpressionEvaluator: DiceExpressionEvaluator): TableContentParser {
-
-    override fun parse(tableContents: List<String>): List<String> {
+class SimpleTableContentParser: TableContentParser {
+    override fun parse(tableContents: List<String>): TableResults {
         return tableContents
-            .asSequence()
-            .map(String::trim)
-            /*
-             * Trims the #-bullet from a result.
-             *
-             * Input:
-             *
-             * 1	Is red. Its touch is burning hot.
-             *
-             * Output:
-             *
-             * Is red. Its touch is burning hot.
-             */
-            .map { it.replace("\\d+\\.?\\t".toRegex(), "") }
-            .map { diceExpressionEvaluator.evaluate(it) }
-            .toList()
     }
 }

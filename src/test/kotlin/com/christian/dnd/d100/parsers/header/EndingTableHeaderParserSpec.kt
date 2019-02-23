@@ -39,21 +39,4 @@ class EndingTableHeaderParserSpec: Spek({
             }
         }
     }
-
-    group("cleaning regex descriptors") {
-        val testCases = listOf(
-            "header d6",
-            "header 2d6",
-            "header (d6)",
-            "header (2d6)",
-            "header (2d6):",
-            "header (2d6):     ",
-            "header - 2d6  " )
-
-        testCases.forEach { expression ->
-            test("the expression '$expression' should have the descriptor 'header'") {
-                tableHeaderParser.parse(expression).descriptor shouldEqual "header"
-            }
-        }
-    }
 })

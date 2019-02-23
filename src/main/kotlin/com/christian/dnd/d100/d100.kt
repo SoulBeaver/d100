@@ -1,5 +1,6 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.cleaner.TableCleaner
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
@@ -39,8 +40,8 @@ fun main(args: Array<String>)  = mainBody {
         EndingTableHeaderParser()
     )
 
-    val simpleTableContentParser = SimpleTableContentParser(diceExpressionEvaluator)
-    val rangeTableContentParser = RangeTableContentParser(diceExpressionEvaluator)
+    val simpleTableContentParser = SimpleTableContentParser()
+    val rangeTableContentParser = RangeTableContentParser()
 
     val tables = D100TableParser(listOf(
         StructuredTableBlockParser(
@@ -52,13 +53,15 @@ fun main(args: Array<String>)  = mainBody {
             simpleTableContentParser,
             rangeTableContentParser,
             tableHeaderParsers
-        ))
+        )),
+        diceExpressionEvaluator,
+        TableCleaner()
     ).parse(d100File)
 
     roll(runSilently, commandLineParser.rolls, tables)
 }
 
-private fun roll(runSilently: Boolean, rolls: Int, tables: List<Table>) {
+private fun roll(runSilently: Boolean, rolls: Int, tables: List<Table.PreppedTable>) {
     val rollMethod = {
         if (!runSilently) {
             RollMaster().rollWithDescriptor(tables)
