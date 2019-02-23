@@ -243,7 +243,7 @@ class D100TableParserSpec: Spek({
         test("has the correct attributes set") {
             val extortTable = tables[0]
             extortTable.apply {
-                header.validate("", 4, 1)
+                header.validate("The raiders are extorting our village for", 4, 1)
 
                 results shouldContain "[2d10] CP per week from each family"
                 results shouldContain "[1d6] SP per month from each family"
@@ -252,7 +252,7 @@ class D100TableParserSpec: Spek({
 
             val tormentTable = tables[2]
             tormentTable.apply {
-                header.validate("", 20, 1)
+                header.validate("Worse, they routinely torment us by", 20, 1)
 
                 results shouldContain "making us burn our clothing and shave our heads"
                 results shouldContain "making us watch as they destroy our market stands"
@@ -261,7 +261,7 @@ class D100TableParserSpec: Spek({
 
             val elseTable = tables[4]
             elseTable.apply {
-                header.validate("", 20, 1)
+                header.validate("What Else?", 20, 1)
 
                 results shouldContain "We've had enough, and are preparing an ambush."
                 results shouldContain "Just when we thought things couldn't get worse, one of our daughters was found murdered and brutalized. Enough is enough!"

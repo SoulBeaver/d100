@@ -23,9 +23,16 @@ class StructuredTableBlockParser(
         // Workaround for compiler bug that crashes if you replace the if expression with a ?.let {}
         val header = contents.firstOrNull { line -> isHeader(line) }
         return if (header != null) {
-            val tableBlock = parseTableBlock(parseTableHeader(header), contents.subList(contents.indexOf(header) + 1, contents.size))
+            val displacedHeaderElements = contents.takeWhile { line -> !isHeader(line) }
+            val tableHeader = if (parseTableHeader(header).descriptor.isBlank()) {
+                parseTableHeader("$header ${displacedHeaderElements.joinToString()}")
+            } else {
+                parseTableHeader(header)
+            }
 
-            parseRecursively(contents.subList(tableBlock.linesRead + 1, contents.size), filename, tablesAcc + tableBlock.table)
+            val tableBlock = parseTableBlock(tableHeader, contents.subList(contents.indexOf(header) + 1, contents.size))
+
+            parseRecursively(contents.subList(tableBlock.linesRead + displacedHeaderElements.size + 1 , contents.size), filename, tablesAcc + tableBlock.table)
         } else {
             tablesAcc
         }
