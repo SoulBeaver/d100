@@ -3,9 +3,10 @@ package com.christian.dnd.d100
 import com.christian.dnd.d100.cleaner.TableCleaner
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
+import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
+import com.christian.dnd.d100.parsers.block.WideTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
 import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
-import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
 import com.christian.dnd.d100.parsers.header.BeginningTableHeaderParser
 import com.christian.dnd.d100.parsers.header.EndingTableHeaderParser
 import com.xenomachina.argparser.ArgParser
@@ -21,7 +22,8 @@ class D100ArgParser(parser: ArgParser) {
 
     val rolls by parser.storing(
         "-r", "--rolls",
-        help = "How many results to roll.") { toInt() }.default(1)
+        help = "How many results to roll."
+    ) { toInt() }.default(1)
 
     val file by parser.positional(
         "FILE",
@@ -29,12 +31,13 @@ class D100ArgParser(parser: ArgParser) {
     ) { File(this) }
 }
 
-fun main(args: Array<String>)  = mainBody {
+fun main(args: Array<String>) = mainBody {
     val commandLineParser = ArgParser(args).parseInto(::D100ArgParser)
     val d100File = commandLineParser.file
     val runSilently = commandLineParser.silent
 
     val diceExpressionEvaluator = DiceExpressionEvaluator()
+    val tableCleaner = TableCleaner()
     val tableHeaderParsers = listOf(
         BeginningTableHeaderParser(),
         EndingTableHeaderParser()
@@ -43,19 +46,26 @@ fun main(args: Array<String>)  = mainBody {
     val simpleTableContentParser = SimpleTableContentParser()
     val rangeTableContentParser = RangeTableContentParser()
 
-    val tables = D100TableParser(listOf(
-        StructuredTableBlockParser(
-            simpleTableContentParser,
-            rangeTableContentParser,
-            tableHeaderParsers
+    val wideTableBlockParser = WideTableBlockParser()
+    val multiTableBlockParser = MultiTableBlockParser(
+        simpleTableContentParser,
+        rangeTableContentParser,
+        tableHeaderParsers
+    )
+    val fileIsTableBlockParser = FileIsTableBlockParser(
+        simpleTableContentParser,
+        rangeTableContentParser,
+        tableHeaderParsers
+    )
+
+    val tables = D100TableParser(
+        listOf(
+            wideTableBlockParser,
+            multiTableBlockParser,
+            fileIsTableBlockParser
         ),
-        FileIsTableBlockParser(
-            simpleTableContentParser,
-            rangeTableContentParser,
-            tableHeaderParsers
-        )),
         diceExpressionEvaluator,
-        TableCleaner()
+        tableCleaner
     ).parse(d100File)
 
     roll(runSilently, commandLineParser.rolls, tables)

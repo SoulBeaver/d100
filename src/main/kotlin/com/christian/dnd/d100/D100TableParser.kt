@@ -8,15 +8,26 @@ import java.io.File
 class D100TableParser(
     private val tableBlockParsers: List<TableBlockParser>,
     private val diceExpressionEvaluator: DiceExpressionEvaluator,
-    private val tableCleaner: TableCleaner) {
+    private val tableCleaner: TableCleaner
+) {
 
     fun parse(d100Table: File): List<Table.PreppedTable> {
+        if (!d100Table.exists() || !d100Table.isFile) {
+            System.out.println("The file ${d100Table.name} either does not exist or is not a file.")
+            return emptyList()
+        }
+
         val filename = d100Table.nameWithoutExtension
         val contents = d100Table.readLines()
             .asSequence()
             .map { line -> line.replace("\u200B", "") }
             .filter(String::isNotBlank)
             .toList()
+
+        if (contents.isEmpty()) {
+            System.out.println("The file ${d100Table.name} is empty.")
+            return emptyList()
+        }
 
         return tableBlockParsers
             .first { parser -> parser.canParse(contents) }
