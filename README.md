@@ -4,6 +4,18 @@
 
 Roll dX tables using this nifty little script.
 
+## Installation
+
+This is a java script which you can run using
+
+`java -jar d100.jar <options> <FILE>`
+
+It might be best to alias this command:
+
+- Mac or Linux: in `.bash_profile` write `alias d100="java -jar /path/to/d100.jar"`
+
+Now you can simply write `d100 <options> <FILE>`.
+
 ## Usage
 
 ```$bash
