@@ -69,6 +69,33 @@ Entrance: The entrance to the lair is A yawning cave.
 Layout: The lair consists of Several caverns connected by wide tunnels.
 ```
 
+### Wide Tables
+
+Given a file `alchemy` with the following contents:
+
+| d6 | Ingredient  | Color  | Usable form  | Effect  | Activation | Duration | Expiration 
+|---|---|---|---|---|---|---|---|
+| 1.  | Exotic oil  |  Brown | Paste  | Acid  | Burn | Instantaneous | 1 min |
+| 2.  | Potent toxin  |  White | Powder  | Enhanced speed  | Ingest | 10 seconds | 10 min
+| 3.  | Rare herb | Yellow | Flakes | Enhanced strength | Inhale | 1 minute | 1 hour
+| 4. | Unusual salt | Green | Oil | Fire or light | Shake | 10 minutes | 8 hours
+| 5. | Precious metal | Red | Solid | Fog or smoke | Splash | 1 hour | 24 hours
+| 6. | Heavy metal | Black | Potion | Transmute substance | Throw | 8 hours | 1 week
+
+(Full table can be found at [/r/behindTheTables](https://old.reddit.com/r/BehindTheTables/comments/aglous/quick_alchemy_herbalism_and_poisons/)
+
+Running `d100 alchemy` will return
+
+```
+Ingredient is Unusual salt
+Color is Red
+Usable form is Paste
+Effect is Enhanced strength
+Activation is Ingest
+Duration is 8 hours
+Expiration is 24 hours
+```
+
 ### Quick and Dirty Tables
 
 Given a file `armor` with the following contents: 

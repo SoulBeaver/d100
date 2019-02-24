@@ -15,7 +15,7 @@ class TableCleaner {
     private fun cleanTableHeader(tableHeader: TableHeader): TableHeader {
         val cleanedDescriptor = tableHeader.descriptor
             .trim()
-            .removeAllPrefixesAndSuffixesOf("()|-_:;")
+            .removeAllPrefixesAndSuffixesOf("()|=-_:;")
             .replace("...", "")
             .replace("…", "")
             .trim()
@@ -30,14 +30,14 @@ class TableCleaner {
                 line.trim()
                     .replace("...", "")
                     .replace("…", "")
-                        /*
-                    * Trims the #-bullet from a result.
-                    *
-                    * Input:
-                    * 1	Is red. Its touch is burning hot.
-                    * Output:
-                    * Is red. Its touch is burning hot.
-                    */
+                    /*
+                * Trims the #-bullet from a result.
+                *
+                * Input:
+                * 1	Is red. Its touch is burning hot.
+                * Output:
+                * Is red. Its touch is burning hot.
+                */
                     .replace("""^\d+[.:;\-)\t]\s*""".toRegex(), "")
                     .trim()
             }.toList()

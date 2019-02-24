@@ -6,17 +6,29 @@ sealed class Table {
     /**
      * A table that has not been cleaned, i.e. no trimming, replacements, etc.
      */
-    data class DirtyTable(val header: TableHeader, val results: TableResults, val rollBehavior: RollBehavior = RollBehavior.REPEAT): Table()
+    data class DirtyTable(
+        val header: TableHeader,
+        val results: TableResults,
+        val rollBehavior: RollBehavior = RollBehavior.REPEAT
+    ) : Table()
 
     /**
      * A table with its header and all of its results cleaned
      */
-    data class CleanedTable(val header: TableHeader, val results: TableResults, val rollBehavior: RollBehavior = RollBehavior.REPEAT): Table()
+    data class CleanedTable(
+        val header: TableHeader,
+        val results: TableResults,
+        val rollBehavior: RollBehavior = RollBehavior.REPEAT
+    ) : Table()
 
     /**
      * A table that has been cleaned and had its dice expressions within the TableResults evaluated.
      */
-    data class PreppedTable(val header: TableHeader, val results: TableResults, val rollBehavior: RollBehavior = RollBehavior.REPEAT): Table()
+    data class PreppedTable(
+        val header: TableHeader,
+        val results: TableResults,
+        val rollBehavior: RollBehavior = RollBehavior.REPEAT
+    ) : Table()
 }
 
 /**

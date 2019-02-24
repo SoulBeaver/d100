@@ -25,7 +25,7 @@ import com.christian.dnd.d100.model.TableResults
  * Chain shirt
  * Chain shirt
  */
-class RangeTableContentParser: TableContentParser {
+class RangeTableContentParser : TableContentParser {
     private val rangeRegex = """(\d+)\s*[-.]+\s*(\d+)(.*)""".toRegex(RegexOption.IGNORE_CASE)
 
     override fun parse(tableContents: List<String>): TableResults {

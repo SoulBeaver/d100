@@ -1,0 +1,7 @@
+d6	Ingredient	Color	Usable form	Effect	Activation	Duration	Expiration
+1.	Exotic oil	Brown	Paste	Acid	Burn	Instantaneous	1 min
+2.	Potent toxin	White	Powder	Enhanced speed	Ingest	10 seconds	10 min
+3.	Rare herb	Yellow	Flakes	Enhanced strength	Inhale	1 minute	1 hour
+4.	Unusual salt	Green	Oil	Fire or light	Shake	10 minutes	8 hours
+5.	Precious metal	Red	Solid	Fog or smoke	Splash	1 hour	24 hours
+6.	Heavy metal	Black	Potion	Transmute substance	Throw	8 hours	1 week

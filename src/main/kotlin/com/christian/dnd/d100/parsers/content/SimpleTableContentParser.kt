@@ -21,7 +21,7 @@ import com.christian.dnd.d100.model.TableResults
  * 5	a flying fish.
  * 6    	a dragonfly.
  */
-class SimpleTableContentParser: TableContentParser {
+class SimpleTableContentParser : TableContentParser {
     override fun parse(tableContents: List<String>): TableResults {
         return tableContents
     }

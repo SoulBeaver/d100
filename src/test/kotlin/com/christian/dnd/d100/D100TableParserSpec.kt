@@ -1,17 +1,18 @@
 package com.christian.dnd.d100
 
 import com.christian.dnd.d100.cleaner.TableCleaner
-import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
 import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
-import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
+import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
+import com.christian.dnd.d100.parsers.block.WideTableBlockParser
 import com.christian.dnd.d100.parsers.header.BeginningTableHeaderParser
 import com.christian.dnd.d100.parsers.header.EndingTableHeaderParser
 import io.mockk.every
 import io.mockk.mockk
 import org.amshove.kluent.shouldContain
+import org.amshove.kluent.shouldContainAll
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotContain
 import org.spekframework.spek2.Spek
@@ -35,7 +36,8 @@ class D100TableParserSpec: Spek({
     val simpleTableContentParser = SimpleTableContentParser()
     val rangeTableContentParser = RangeTableContentParser()
 
-    val structuredTableBlockParser = StructuredTableBlockParser(
+    val wideTableBlockParser = WideTableBlockParser()
+    val structuredTableBlockParser = MultiTableBlockParser(
         simpleTableContentParser,
         rangeTableContentParser,
         tableHeaderParsers
@@ -46,7 +48,14 @@ class D100TableParserSpec: Spek({
         tableHeaderParsers
     )
 
-    val parser = D100TableParser(listOf(structuredTableBlockParser, fileIsTableBlockParser), diceExpressionEvaluator, tableCleaner)
+    val parser = D100TableParser(
+        listOf(
+            wideTableBlockParser,
+            structuredTableBlockParser,
+            fileIsTableBlockParser
+        ),
+        diceExpressionEvaluator,
+        tableCleaner)
 
     group("parsing slime") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/slime").toURI())
@@ -269,6 +278,162 @@ class D100TableParserSpec: Spek({
 
                 results shouldContain "We've had enough, and are preparing an ambush."
                 results shouldContain "Just when we thought things couldn't get worse, one of our daughters was found murdered and brutalized. Enough is enough!"
+            }
+        }
+    }
+
+    group("parsing trailRations") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/trailRations").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 6
+
+            val meatTable = tables[0]
+            meatTable.apply {
+                header.validate("Meat is", 12, 1)
+                results shouldContainAll listOf("Beef jerky", "Deer jerky", "Dried pork rinds", "Smoked sausage", "Spicy sausage", "Sweet sausage")
+            }
+
+            val breadTable = tables[1]
+            breadTable.apply {
+                header.validate("Bread is", 12, 1)
+                results shouldContainAll listOf("Beer bread", "Biscuits", "Brown bread", "Pumpernickel", "Rye bread", "Sourdough bread")
+            }
+
+            val vegetableTable = tables[2]
+            vegetableTable.apply {
+                header.validate("Pickled Vegetable is", 12, 1)
+                results shouldContainAll listOf("Asparagus", "Beets", "Cauliflower", "Green beans", "Red cabbage")
+            }
+
+            val nutsTable = tables[3]
+            nutsTable.apply {
+                header.validate("Nuts / Seeds is", 12, 1)
+                results shouldContainAll listOf("Cashews", "Pistachios", "Sunflower seeds", "Walnuts")
+            }
+
+            val fruitTable = tables[4]
+            fruitTable.apply {
+                header.validate("Dried Fruit is", 12, 1)
+                results shouldContainAll listOf("Apples", "Apricots", "Mangoes", "Raisins", "Sun-dried tomatoes")
+            }
+
+            val boilTable = tables[5]
+            boilTable.apply {
+                header.validate("Boil and Serve is", 12, 1)
+                results shouldContainAll listOf("Beets", "Black beans", "Mushrooms", "Lentils", "White beans", "Turnips")
+            }
+        }
+    }
+
+    group("parsing trailRations without dieSize") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/trailRations-reduced").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 6
+
+            val meatTable = tables[0]
+            meatTable.apply {
+                header.validate("Meat is", 12, 1)
+                results shouldContainAll listOf("Beef jerky", "Deer jerky", "Dried pork rinds", "Smoked sausage", "Spicy sausage", "Sweet sausage")
+            }
+
+            val breadTable = tables[1]
+            breadTable.apply {
+                header.validate("Bread is", 12, 1)
+                results shouldContainAll listOf("Beer bread", "Biscuits", "Brown bread", "Pumpernickel", "Rye bread", "Sourdough bread")
+            }
+
+            val vegetableTable = tables[2]
+            vegetableTable.apply {
+                header.validate("Pickled Vegetable is", 12, 1)
+                results shouldContainAll listOf("Asparagus", "Beets", "Cauliflower", "Green beans", "Red cabbage")
+            }
+
+            val nutsTable = tables[3]
+            nutsTable.apply {
+                header.validate("Nuts / Seeds is", 12, 1)
+                results shouldContainAll listOf("Cashews", "Pistachios", "Sunflower seeds", "Walnuts")
+            }
+
+            val fruitTable = tables[4]
+            fruitTable.apply {
+                header.validate("Dried Fruit is", 12, 1)
+                results shouldContainAll listOf("Apples", "Apricots", "Mangoes", "Raisins", "Sun-dried tomatoes")
+            }
+
+            val boilTable = tables[5]
+            boilTable.apply {
+                header.validate("Boil and Serve is", 12, 1)
+                results shouldContainAll listOf("Beets", "Black beans", "Mushrooms", "Lentils", "White beans", "Turnips")
+            }
+        }
+    }
+
+    group("parsing gladiator") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/gladiator").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 5
+
+            val armorTable = tables[0]
+            armorTable.apply {
+                header.validate("Armor is", 6, 1)
+                results shouldContainAll listOf("None", "Bronze helm", "Chainmail")
+            }
+
+            val weaponryTable = tables[1]
+            weaponryTable.apply {
+                header.validate("Weaponry is", 6, 1)
+                results shouldContainAll listOf("Two shortswords", "Spear and shield", "Scimitar and whip")
+            }
+
+            val featureTable = tables[3]
+            featureTable.apply {
+                header.validate("Identifying feature is", 6, 1)
+                results shouldContainAll listOf("Maritime tattoo", "Scars on face", "Long hair")
+            }
+
+            val tragedyTable = tables[4]
+            tragedyTable.apply {
+                header.validate("Personal tragedy is", 6, 1)
+                results shouldContainAll listOf("Doomed love affair", "Death of a child", "Prisoner of war")
+            }
+        }
+    }
+
+    group("parsing alchemy") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/alchemy").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 7
+
+            val ingredientTable = tables[0]
+            ingredientTable.apply {
+                header.validate("Ingredient is", 6, 1)
+                results shouldContainAll listOf("Exotic oil", "Rare herb", "Heavy metal")
+            }
+
+            val formTable = tables[2]
+            formTable.apply {
+                header.validate("Usable form is", 6, 1)
+                results shouldContainAll listOf("Paste", "Powder", "Oil")
+            }
+
+            val activationTable = tables[4]
+            activationTable.apply {
+                header.validate("Activation is", 6, 1)
+                results shouldContainAll listOf("Burn", "Shake", "Splash")
+            }
+
+            val expirationTable = tables[6]
+            expirationTable.apply {
+                header.validate("Expiration is", 6, 1)
+                results shouldContainAll listOf("1 min", "1 hour", "1 week")
             }
         }
     }
