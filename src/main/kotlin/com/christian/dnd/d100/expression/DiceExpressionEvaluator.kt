@@ -1,15 +1,15 @@
-package com.christian.dnd.d100
+package com.christian.dnd.d100.expression
 
 import kotlin.random.Random
 
-class DiceExpressionEvaluator(private val random: Random = Random.Default) {
+class DiceExpressionEvaluator(private val random: Random = Random.Default): ExpressionEvaluator {
     // Match any expression of the form (X)dY or the special case d%
     // Examples: d20, D20, 1d20, d%, 1000d1000
-    private val diceExpressionRegex = """(\d*)d(\d+|%)""".toRegex(RegexOption.IGNORE_CASE)
+    private val diceExpression = """(\d*)d(\d+|%)""".toRegex(RegexOption.IGNORE_CASE)
 
-    fun evaluate(line: String): String {
-        return diceExpressionRegex.findAll(line)
-            .fold(line) { replacedLineAcc: String, match ->
+    override fun evaluate(line: String): String {
+        return diceExpression.findAll(line)
+            .fold(line) { replacedLineAcc, match ->
                 val expressionToReplace = match.value
 
                 val rollsRequired = if (match.groupValues[1].isNotBlank()) match.groupValues[1].toInt() else 1

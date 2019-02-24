@@ -1,6 +1,8 @@
 package com.christian.dnd.d100
 
 import com.christian.dnd.d100.cleaner.TableCleaner
+import com.christian.dnd.d100.expression.ArithmeticExpressionEvaluator
+import com.christian.dnd.d100.expression.DiceExpressionEvaluator
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
@@ -36,7 +38,11 @@ fun main(args: Array<String>) = mainBody {
     val d100File = commandLineParser.file
     val runSilently = commandLineParser.silent
 
-    val diceExpressionEvaluator = DiceExpressionEvaluator()
+    val expressionEvaluationPipeline = listOf(
+        DiceExpressionEvaluator(),
+        ArithmeticExpressionEvaluator()
+    )
+
     val tableCleaner = TableCleaner()
     val tableHeaderParsers = listOf(
         BeginningTableHeaderParser(),
@@ -64,7 +70,7 @@ fun main(args: Array<String>) = mainBody {
             multiTableBlockParser,
             fileIsTableBlockParser
         ),
-        diceExpressionEvaluator,
+        expressionEvaluationPipeline,
         tableCleaner
     ).parse(d100File)
 

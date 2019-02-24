@@ -1,5 +1,6 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.expression.DiceExpressionEvaluator
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
@@ -21,7 +22,7 @@ class DiceExpressionEvaluatorSpec: Spek({
         )
 
         testCases.forEach { (expression, expected, random) ->
-            test ("$expression should equal $expected") {
+            test ("$expression should evaluate to $expected") {
                 val actual = DiceExpressionEvaluator(random).evaluate(expression)
                 actual shouldEqual expected
             }

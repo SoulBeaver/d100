@@ -1,13 +1,14 @@
 package com.christian.dnd.d100
 
 import com.christian.dnd.d100.cleaner.TableCleaner
+import com.christian.dnd.d100.expression.ExpressionEvaluator
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.TableBlockParser
 import java.io.File
 
 class D100TableParser(
     private val tableBlockParsers: List<TableBlockParser>,
-    private val diceExpressionEvaluator: DiceExpressionEvaluator,
+    private val expressionEvaluatorPipeline: List<ExpressionEvaluator>,
     private val tableCleaner: TableCleaner
 ) {
 
@@ -35,7 +36,11 @@ class D100TableParser(
             .asSequence()
             .map { dirtyTable -> tableCleaner.clean(dirtyTable) }
             .map { cleanedTable ->
-                val evaluatedTableResults = cleanedTable.results.map { diceExpressionEvaluator.evaluate(it) }
+                val evaluatedTableResults = cleanedTable.results.map {
+                    expressionEvaluatorPipeline.fold(it) { evaluatedExpressionAcc, evaluator ->
+                        evaluator.evaluate(evaluatedExpressionAcc)
+                    }
+                }
                 Table.PreppedTable(cleanedTable.header, evaluatedTableResults, cleanedTable.rollBehavior)
             }
             .toList()

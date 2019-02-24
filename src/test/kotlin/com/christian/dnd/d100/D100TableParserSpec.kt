@@ -1,6 +1,8 @@
 package com.christian.dnd.d100
 
 import com.christian.dnd.d100.cleaner.TableCleaner
+import com.christian.dnd.d100.expression.ArithmeticExpressionEvaluator
+import com.christian.dnd.d100.expression.DiceExpressionEvaluator
 import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
@@ -17,16 +19,16 @@ import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotContain
 import org.spekframework.spek2.Spek
 import java.io.File
+import kotlin.random.Random
 
 
 class D100TableParserSpec: Spek({
-    val diceExpressionEvaluator = mockk<DiceExpressionEvaluator>()
-    // Return the original string argument without evaluating any dice expressions.
-    every {
-        diceExpressionEvaluator.evaluate(any())
-    } answers { root -> root.invocation.args[0].toString() }
-
     val tableCleaner = TableCleaner()
+
+    val expressionEvaluationPipeline = listOf(
+        DiceExpressionEvaluator(Random(0)),
+        ArithmeticExpressionEvaluator()
+    )
 
     val tableHeaderParsers = listOf(
         BeginningTableHeaderParser(),
@@ -54,7 +56,7 @@ class D100TableParserSpec: Spek({
             structuredTableBlockParser,
             fileIsTableBlockParser
         ),
-        diceExpressionEvaluator,
+        expressionEvaluationPipeline,
         tableCleaner)
 
     group("parsing slime") {
@@ -67,7 +69,7 @@ class D100TableParserSpec: Spek({
                 header.validate("This slime’s colour", 20, 1)
 
                 results shouldContain "Is red. Its touch is burning hot."
-                results shouldContain "Is grey. It attacks by exploding and then reforming itself 1d4 rounds later."
+                results shouldContain "Is grey. It attacks by exploding and then reforming itself 2 rounds later."
             }
 
             val slimeTextureTable = tables[1]
@@ -166,7 +168,7 @@ class D100TableParserSpec: Spek({
             weatherTable.apply {
                 header.validate("specialWeather", 85, 1)
 
-                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 1d4 hours."
+                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 3 hours."
                 results shouldContain "Plant Growth. Plants in the storm's area grow to gargantuan size for one year. A creature moving through an effected area must spend 4 feet of movement for every 1 foot it wishes to move."
             }
         }
@@ -183,6 +185,7 @@ class D100TableParserSpec: Spek({
 
                 results shouldContain "A well made hourglass with no sand inside."
                 results shouldContain "A curious looking leaf that curls up when touched"
+                results shouldContain "A pin cushion in the shape of a heart. 8 pins are pushed into it."
             }
         }
     }
@@ -258,8 +261,8 @@ class D100TableParserSpec: Spek({
             extortTable.apply {
                 header.validate("The raiders are extorting our village for", 4, 1)
 
-                results shouldContain "[2d10] CP per week from each family"
-                results shouldContain "[1d6] SP per month from each family"
+                results shouldContain "[10] CP per week from each family"
+                results shouldContain "[4] SP per month from each family"
                 results shouldNotContain "They also demand..."
             }
 
