@@ -6,6 +6,7 @@ import com.christian.dnd.d100.expression.DiceExpressionEvaluator
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
+import com.christian.dnd.d100.parsers.block.WhiteSpaceDelimitedTableBlockParser
 import com.christian.dnd.d100.parsers.block.WideTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
 import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
@@ -63,11 +64,13 @@ fun main(args: Array<String>) = mainBody {
         rangeTableContentParser,
         tableHeaderParsers
     )
+    val whiteSpaceDelimitedTableBlockParser = WhiteSpaceDelimitedTableBlockParser()
 
     val tables = D100TableParser(
         listOf(
             wideTableBlockParser,
             multiTableBlockParser,
+            whiteSpaceDelimitedTableBlockParser,
             fileIsTableBlockParser
         ),
         expressionEvaluationPipeline,

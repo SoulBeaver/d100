@@ -8,11 +8,10 @@ import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
 import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
 import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
+import com.christian.dnd.d100.parsers.block.WhiteSpaceDelimitedTableBlockParser
 import com.christian.dnd.d100.parsers.block.WideTableBlockParser
 import com.christian.dnd.d100.parsers.header.BeginningTableHeaderParser
 import com.christian.dnd.d100.parsers.header.EndingTableHeaderParser
-import io.mockk.every
-import io.mockk.mockk
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldContainAll
 import org.amshove.kluent.shouldEqual
@@ -50,10 +49,13 @@ class D100TableParserSpec: Spek({
         tableHeaderParsers
     )
 
+    val whiteSpaceDelimitedTableBlockParser = WhiteSpaceDelimitedTableBlockParser()
+
     val parser = D100TableParser(
         listOf(
             wideTableBlockParser,
             structuredTableBlockParser,
+            whiteSpaceDelimitedTableBlockParser,
             fileIsTableBlockParser
         ),
         expressionEvaluationPipeline,
@@ -437,6 +439,26 @@ class D100TableParserSpec: Spek({
             expirationTable.apply {
                 header.validate("Expiration is", 6, 1)
                 results shouldContainAll listOf("1 min", "1 hour", "1 week")
+            }
+        }
+    }
+
+    group("parsing spire") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/spire").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 6
+
+            val houseTable = tables[0]
+            houseTable.apply {
+                header.validate("WHICH HOUSE IS THIS DROW NOBLE CLAIMING TO COME FROM?", 10, 1)
+                results shouldContainAll listOf(
+                    "Destera, the Weavers: deposed rulers of Spire, all faded grandeur",
+                    "Yssen, the Unquiet Blades: glory-hound warriors",
+                    "Quinn, the Noble and Most High; nouveau riche, not bound by blood but sworn in",
+                    "Roll again, re-rolling further results of 10 – they have been disowned by this house"
+                )
             }
         }
     }

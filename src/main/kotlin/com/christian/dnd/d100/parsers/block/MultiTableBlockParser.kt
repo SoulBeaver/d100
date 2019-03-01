@@ -19,9 +19,8 @@ class MultiTableBlockParser(
     private val tableHeaderParsers: List<TableHeaderParser>
 ) : TableBlockParser {
 
-    override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
-        return parseRecursively(contents, filename)
-    }
+    override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> =
+        parseRecursively(contents.filter(String::isNotBlank), filename)
 
     // We are intentionally not tailrecursive because of a kotlin compiler error in 1.3.X (https://youtrack.jetbrains.com/issue/KT-14961)
     private fun parseRecursively(

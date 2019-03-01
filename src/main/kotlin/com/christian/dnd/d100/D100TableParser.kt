@@ -22,7 +22,6 @@ class D100TableParser(
         val contents = d100Table.readLines()
             .asSequence()
             .map { line -> line.replace("\u200B", "") }
-            .filter(String::isNotBlank)
             .toList()
 
         if (contents.isEmpty()) {
