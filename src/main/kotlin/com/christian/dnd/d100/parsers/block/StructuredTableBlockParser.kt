@@ -7,13 +7,21 @@ import com.christian.dnd.d100.parsers.content.TableContentParser
 import com.christian.dnd.d100.parsers.header.TableHeaderParser
 import com.christian.dnd.d100.utils.takeWhileUpToMax
 
-private data class TableHeaderBlock(val tableHeader: TableHeader, val linesRead: Int, val headerLine: String)
+private data class TableHeaderBlock(val tableHeader: TableHeader, val tableBlockStart: Int, val linesRead: Int, val headerLine: String)
 private data class TableBlock(val table: Table.DirtyTable, val linesRead: Int)
 
 /**
  * Assumes that the file has a structure wherein one or more tables will have a descriptor and a list of die roll results.
+ *
+ * Example:
+ *
+ * d% Roll --- Armor Type
+ * 01-08 Breastplate
+ * 09-18 Chain mail
+ *
+ * The table is considered structured because it contains a header specifying the number of results (d%).
  */
-class MultiTableBlockParser(
+class StructuredTableBlockParser(
     private val simpleTableContentParser: TableContentParser,
     private val rangeTableContentParser: TableContentParser,
     private val tableHeaderParsers: List<TableHeaderParser>
@@ -29,7 +37,7 @@ class MultiTableBlockParser(
         tablesAcc: List<Table.DirtyTable> = emptyList()
     ): List<Table.DirtyTable> {
         return parseTableHeaderBlock(contents)?.let { tableHeaderBlock ->
-            val (tableHeader, _, headerLine) = tableHeaderBlock
+            val (tableHeader, tableBlockStart, _, headerLine) = tableHeaderBlock
 
             val tableBlock = parseTableBlock(
                 tableHeader,
@@ -37,7 +45,7 @@ class MultiTableBlockParser(
             )
 
             parseRecursively(
-                contents.subList(tableBlock.linesRead + tableHeaderBlock.linesRead, contents.size),
+                contents.subList(tableBlockStart + tableBlock.linesRead + tableHeaderBlock.linesRead, contents.size),
                 filename,
                 tablesAcc + tableBlock.table
             )
@@ -72,11 +80,12 @@ class MultiTableBlockParser(
 
                         TableHeaderBlock(
                             parseTableHeader(joinedHeaderLine),
+                            contents.indexOf(displacedHeaderElements.first()),
                             displacedHeaderElements.size + 1,
                             headerLine
                         )
                     }
-                    else -> TableHeaderBlock(parseTableHeader(headerLine), 1, headerLine)
+                    else -> TableHeaderBlock(parseTableHeader(headerLine), contents.indexOf(headerLine), 1, headerLine)
                 }
             }
     }

@@ -5,7 +5,8 @@ import com.christian.dnd.d100.expression.ArithmeticExpressionEvaluator
 import com.christian.dnd.d100.expression.DiceExpressionEvaluator
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
-import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
+import com.christian.dnd.d100.parsers.block.MixedTableBlockParser
+import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
 import com.christian.dnd.d100.parsers.block.WhiteSpaceDelimitedTableBlockParser
 import com.christian.dnd.d100.parsers.block.WideTableBlockParser
 import com.christian.dnd.d100.parsers.content.RangeTableContentParser
@@ -39,6 +40,12 @@ fun main(args: Array<String>) = mainBody {
     val d100File = commandLineParser.file
     val runSilently = commandLineParser.silent
 
+    val tables = initializeTableParser().parse(d100File)
+
+    roll(runSilently, commandLineParser.rolls, tables)
+}
+
+private fun initializeTableParser(): D100TableParser {
     val expressionEvaluationPipeline = listOf(
         DiceExpressionEvaluator(),
         ArithmeticExpressionEvaluator()
@@ -54,7 +61,7 @@ fun main(args: Array<String>) = mainBody {
     val rangeTableContentParser = RangeTableContentParser()
 
     val wideTableBlockParser = WideTableBlockParser()
-    val multiTableBlockParser = MultiTableBlockParser(
+    val structuredTableBlockParser = StructuredTableBlockParser(
         simpleTableContentParser,
         rangeTableContentParser,
         tableHeaderParsers
@@ -66,34 +73,26 @@ fun main(args: Array<String>) = mainBody {
     )
     val whiteSpaceDelimitedTableBlockParser = WhiteSpaceDelimitedTableBlockParser()
 
-    val tables = D100TableParser(
+    return D100TableParser(
         listOf(
             wideTableBlockParser,
-            multiTableBlockParser,
-            whiteSpaceDelimitedTableBlockParser,
+            MixedTableBlockParser(
+                structuredTableBlockParser,
+                whiteSpaceDelimitedTableBlockParser
+            ),
             fileIsTableBlockParser
         ),
         expressionEvaluationPipeline,
         tableCleaner
-    ).parse(d100File)
-
-    roll(runSilently, commandLineParser.rolls, tables)
+    )
 }
 
 private fun roll(runSilently: Boolean, rolls: Int, tables: List<Table.PreppedTable>) {
-    val rollMethod = {
-        if (!runSilently) {
-            RollMaster().rollWithDescriptor(tables)
-        } else {
-            RollMaster().rollWithoutDescriptor(tables)
-        }
-    }
-
     (0 until rolls).forEach { roll ->
         if (rolls > 1) {
             println("Roll $roll:")
         }
 
-        rollMethod().forEach { println(it) }
+        RollMaster().roll(tables, hideDescriptor = runSilently).forEach { println(it) }
     }
 }

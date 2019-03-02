@@ -4,7 +4,7 @@ import com.christian.dnd.d100.expression.ArithmeticExpressionEvaluator
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 
-class ArithmeticExpressionEvaluatorSpec: Spek({
+class ArithmeticExpressionEvaluatorSpec : Spek({
     val evaluator = ArithmeticExpressionEvaluator()
 
     group("various arithmetic expressions") {
@@ -27,5 +27,4 @@ class ArithmeticExpressionEvaluatorSpec: Spek({
             }
         }
     }
-
 })

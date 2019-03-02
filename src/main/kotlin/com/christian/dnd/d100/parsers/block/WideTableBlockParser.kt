@@ -60,20 +60,20 @@ class WideTableBlockParser : TableBlockParser {
 
     override fun canParse(contents: List<String>): Boolean {
         // Given a list of tables in a column format (think csv but not as nicely structured)
-        val matrix: List<List<String>> = contents
+        val tableMatrix: List<List<String>> = contents
             .asSequence()
             .filterNot { isSeparatorRow(it) }
             .map { it.split(*wideTableDelimiters) }
             .toList()
 
         // Grab the first row which "should" be the header row (not guaranteed but whatever)
-        val headerRow = matrix.first()
+        val headerRow = tableMatrix.first()
         if (headerRow.size == 1) {
             return false
         }
 
         // Transform the first column into a list of (header, value1, value2, ...)
-        val firstColumn: List<String> = matrix.map { it[0] }
+        val firstColumn: List<String> = tableMatrix.map { it[0] }
         /* If the table has a Dice column we will ignore it when counting the wide table, e.g.
          * D20  Results
          * 1    Foo
@@ -87,8 +87,8 @@ class WideTableBlockParser : TableBlockParser {
 
         // If we can find the same number of columns in every row, then we're a wide table!
         // Note that this still works for tables with empty columns as long as they keep the delimiter.
-        return columnSize > 1
-                && matrix.all { row -> row.size == headerRow.size }
+        return columnSize > 1 &&
+                tableMatrix.all { row -> row.size == headerRow.size }
     }
 
     private fun isDieRollColumn(column: List<String>): Boolean {

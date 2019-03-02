@@ -9,8 +9,15 @@ buildscript {
     ext.junit5_version = '5.4.0'
     ext.mockk_version = '1.9.1'
 
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:7.1.0"
     }
 }
 
@@ -19,6 +26,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "4.0.4"
     id 'application'
 }
+
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 group 'com.christian.dnd'
 version '1.0-SNAPSHOT'
