@@ -4,7 +4,15 @@ import dev.christianbroomfield.d100.model.Table
 import dev.christianbroomfield.d100.model.TableHeader
 import dev.christianbroomfield.d100.utils.removeAllPrefixesAndSuffixesOf
 
+/**
+ * Removes characters from the table header and results.
+ */
 class TableCleaner {
+    /**
+     * Cleans a table by removing trailing or leading characters.
+     *
+     * @return a cleaned table, one which has been stripped of any unnecessary characters.
+     */
     fun clean(table: Table.DirtyTable): Table.CleanedTable {
         val cleanedTabledHeader = cleanTableHeader(table.header)
         val cleanedTableResults = cleanTableResults(table.results)

@@ -15,6 +15,11 @@ class FileIsTableBlockParser(
     private val tableHeaderParsers: List<TableHeaderParser>
 ) : TableBlockParser {
 
+    /**
+     * @param contents the list of results and a table header
+     * @param filename name of the file being parsed
+     * @return the parsed table
+     */
     override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> =
         contents.filter(String::isNotBlank).let { filteredContents ->
             val tableHeader = parseTableHeader("d${filteredContents.size} $filename")

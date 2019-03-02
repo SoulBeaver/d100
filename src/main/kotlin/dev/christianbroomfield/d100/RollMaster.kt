@@ -4,8 +4,18 @@ import dev.christianbroomfield.d100.model.RollBehavior
 import dev.christianbroomfield.d100.model.Table
 import kotlin.random.Random
 
+/**
+ * Rolls on {@see PreppedTable}s and returns a list of results.
+ */
 class RollMaster(private val random: Random = Random.Default) {
 
+    /**
+     * Rolls on every table and returns a list of results.
+     *
+     * @param tables the tables to be rolled.
+     * @param hideDescriptor hide the descriptor that is part of the table header.
+     * @return a list of results
+     */
     fun roll(tables: List<Table.PreppedTable>, hideDescriptor: Boolean = false): List<String> {
         return when {
             hideDescriptor -> roll(tables) { _, result ->

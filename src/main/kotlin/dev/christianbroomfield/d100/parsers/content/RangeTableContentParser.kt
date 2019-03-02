@@ -29,6 +29,10 @@ class RangeTableContentParser : TableContentParser {
     private val singleValueRegex = """(\d+)\s+(.*)""".toRegex(RegexOption.IGNORE_CASE)
     private val rangeRegex = """(\d+)\s*[–\-.]+\s*(\d+)(.*)""".toRegex(RegexOption.IGNORE_CASE)
 
+    /**
+     * @param tableContents the contents to be parsed
+     * @return a list of table results
+     */
     override fun parse(tableContents: List<String>): TableResults {
         return tableContents.flatMap { line ->
             when {
@@ -51,10 +55,7 @@ class RangeTableContentParser : TableContentParser {
 
     private fun singleValueList(match: MatchResult): List<String> {
         val matches = match.groupValues
-
-        val value = matches[1].toInt()
         val result = matches[2]
-
         return listOf(result)
     }
 }

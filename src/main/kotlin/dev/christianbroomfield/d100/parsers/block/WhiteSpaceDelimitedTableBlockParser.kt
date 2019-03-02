@@ -18,6 +18,11 @@ import dev.christianbroomfield.d100.model.TableHeader
  * On a network of lianas
  */
 class WhiteSpaceDelimitedTableBlockParser : TableBlockParser {
+    /**
+     * @param contents the list of results and a table header
+     * @param filename name of the file being parsed
+     * @return the parsed table
+     */
     override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
         return parseRecursively(trimLeadingAndTrailingBlankLines(contents), filename)
     }

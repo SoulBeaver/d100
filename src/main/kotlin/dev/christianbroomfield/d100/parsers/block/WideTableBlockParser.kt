@@ -3,11 +3,19 @@ package dev.christianbroomfield.d100.parsers.block
 import dev.christianbroomfield.d100.model.Table
 import dev.christianbroomfield.d100.model.TableHeader
 
+/**
+ * Parses a table matrix or table grid (tables grouped horizontally and not vertically) into a list of tables.
+ */
 class WideTableBlockParser : TableBlockParser {
 
     private val diceHeaderExpression = """^\d*d\d+.*""".toRegex(RegexOption.IGNORE_CASE)
     private val wideTableDelimiters = arrayOf("\t", ",", "|", ";")
 
+    /**
+     * @param contents the list of results and a table header
+     * @param filename name of the file being parsed
+     * @return the parsed table
+     */
     override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
         /*
          * Contents:

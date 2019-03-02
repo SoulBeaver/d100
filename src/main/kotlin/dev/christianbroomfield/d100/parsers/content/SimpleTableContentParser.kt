@@ -22,6 +22,10 @@ import dev.christianbroomfield.d100.model.TableResults
  * 6    	a dragonfly.
  */
 class SimpleTableContentParser : TableContentParser {
+    /**
+     * @param tableContents the contents to be parsed
+     * @return a list of table results
+     */
     override fun parse(tableContents: List<String>): TableResults {
         return tableContents
     }
