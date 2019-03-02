@@ -61,11 +61,15 @@ class MixedTableBlockParser(
     ): List<Table.DirtyTable> {
         return whiteSpaceTables.mapNotNull { table ->
             when {
+                isStructuredHeader(table.header) -> getIdenticalStructuredTable(structuredTables, table)
                 isCompletelySeparateTable(structuredTables, table) -> table
-                tablesAreIdentical(structuredTables, table) -> getIdenticalStructuredTable(structuredTables, table)
                 else -> null
             }
         }
+    }
+
+    private fun isStructuredHeader(tableHeader: TableHeader): Boolean {
+        return structuredTableBlockParser.canParse(listOf(tableHeader.descriptor))
     }
 
     private fun isCompletelySeparateTable(structuredTables: List<Table.DirtyTable>, table: Table.DirtyTable): Boolean {
@@ -91,11 +95,6 @@ class MixedTableBlockParser(
         eligibleWhiteSpaceTables: List<Table.DirtyTable>
     ): List<Table.DirtyTable> {
         return structuredTables.filter { isCompletelySeparateTable(eligibleWhiteSpaceTables, it) }
-    }
-
-    private fun tablesAreIdentical(structuredTables: List<Table.DirtyTable>, table: Table.DirtyTable): Boolean {
-        return getIdenticalStructuredTable(structuredTables, table)?.results?.containsAll(table.results)
-            ?: false
     }
 
     private fun getIdenticalStructuredTable(

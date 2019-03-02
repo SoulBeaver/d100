@@ -1,5 +1,6 @@
 package com.christian.dnd.d100.parsers.block
 
+import com.christian.dnd.d100.model.RollBehavior
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.model.TableResults
@@ -55,10 +56,8 @@ class StructuredTableBlockParser(
     override fun canParse(contents: List<String>) = contents.any { line -> isHeader(line) }
 
     private fun parseTableBlock(header: TableHeader, contents: List<String>): TableBlock {
-        return contents.takeWhileUpToMax(header.dieSize) { line -> !isHeader(line) }
-            .let { tableContents ->
-                TableBlock(parseTable(header, tableContents), tableContents.size)
-            }
+        return contents.takeWhileUpToMax(header.dieSize * header.rollsRequired) { line -> !isHeader(line) }
+            .let { tableContents -> TableBlock(parseTable(header, tableContents), tableContents.size) }
     }
 
     private fun parseTable(tableHeader: TableHeader, tableContents: TableResults): Table.DirtyTable {
@@ -67,7 +66,7 @@ class StructuredTableBlockParser(
             else -> rangeTableContentParser.parse(tableContents)
         }
 
-        return Table.DirtyTable(tableHeader, results)
+        return Table.DirtyTable(tableHeader, results, rollBehavior = if (tableHeader.dieSize == results.size) RollBehavior.REPEAT else RollBehavior.ADD)
     }
 
     private fun parseTableHeaderBlock(contents: List<String>): TableHeaderBlock? {

@@ -1,5 +1,6 @@
 package com.christian.dnd.d100
 
+import com.christian.dnd.d100.model.RollBehavior
 import com.christian.dnd.d100.model.Table
 import com.christian.dnd.d100.model.TableHeader
 import org.amshove.kluent.shouldContain
@@ -222,6 +223,30 @@ class RollMasterSpec : Spek({
             })
 
             rollMaster.roll(tables, hideDescriptor = true) shouldContain "Breastplate"
+        }
+    }
+
+    group("rolling a table with RollBehavior.ADD") {
+        val tables = listOf(
+            Table.PreppedTable(
+                TableHeader(2, 3, "Foster parents"),
+                listOf(
+                    "Both parents are dead.",
+                    "One parent is dead, even chance for mother or father.",
+                    "Both parents are alive.",
+                    "Both parents are alive.",
+                    "You do not know the fate of your foster parents"
+                ),
+                RollBehavior.ADD
+            )
+        )
+
+        test("returns a random result within range") {
+            val rollMaster = RollMaster()
+
+            repeat(1000) {
+                tables[0].results shouldContain rollMaster.roll(tables, hideDescriptor = true)[0]
+            }
         }
     }
 })

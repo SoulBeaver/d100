@@ -42,7 +42,7 @@ class DiceExpressionEvaluatorSpec : Spek({
 
         testCases.forEach { (expression, expectedRange) ->
             test("$expression is always in range $expectedRange") {
-                (1..1000).forEach { _ ->
+                repeat(1000) {
                     expectedRange shouldContain evaluator.evaluate(expression).toInt()
                 }
             }

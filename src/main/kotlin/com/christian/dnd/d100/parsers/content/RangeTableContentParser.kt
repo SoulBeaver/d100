@@ -27,7 +27,7 @@ import com.christian.dnd.d100.model.TableResults
  */
 class RangeTableContentParser : TableContentParser {
     private val singleValueRegex = """(\d+)\s+(.*)""".toRegex(RegexOption.IGNORE_CASE)
-    private val rangeRegex = """(\d+)\s*[-.]+\s*(\d+)(.*)""".toRegex(RegexOption.IGNORE_CASE)
+    private val rangeRegex = """(\d+)\s*[–\-.]+\s*(\d+)(.*)""".toRegex(RegexOption.IGNORE_CASE)
 
     override fun parse(tableContents: List<String>): TableResults {
         return tableContents.flatMap { line ->

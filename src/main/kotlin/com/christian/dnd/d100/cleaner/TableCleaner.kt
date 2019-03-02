@@ -39,6 +39,8 @@ class TableCleaner {
                      * Is red. Its touch is burning hot.
                      */
                     .replace("""^\d+[.:;\-)\t]\s*""".toRegex(), "")
+                    .removePrefix("or less")
+                    .removePrefix("or more")
                     .trim()
             }.toList()
     }

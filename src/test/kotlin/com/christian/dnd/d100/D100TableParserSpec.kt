@@ -667,6 +667,56 @@ class D100TableParserSpec : Spek({
             }
         }
     }
+
+    group("parsing changeling") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/changeling").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 12
+
+            val reasonTable = tables[0]
+            reasonTable.apply {
+                header.validate("Reason", 20, 1)
+                results shouldContainAll listOf(
+                    "A faerie lord or lady desired an heir and sent forth faeries to steal away the infant.",
+                    "Faeries simply stole the child on a whim."
+                )
+            }
+
+            val parentsTable = tables[1]
+            parentsTable.apply {
+                header.validate("Parental Status", 3, 2)
+                results shouldContainAll listOf(
+                    "Both parents are dead.",
+                    "One parent is dead, even chance for mother or father.",
+                    "Both parents are alive.",
+                    "You do not know the fate of your foster parents"
+                )
+
+                results.count { it == "Both parents are alive." } shouldEqual 2
+            }
+
+            val familyWealthTable = tables[4]
+            familyWealthTable.apply {
+                header.validate("Family Wealth", 6, 3)
+                results shouldContainAll listOf(
+                    "Destitute. Subtract 6 from your Childhood roll.",
+                    "Poor. Subtract 3 from your Childhood roll.",
+                    "Wealthy. Add 3 to your Childhood roll."
+                )
+            }
+
+            val genderTable = tables[9]
+            genderTable.apply {
+                header.validate("Gender", 6, 1)
+                results shouldContainAll listOf(
+                    "Female",
+                    "Male"
+                )
+            }
+        }
+    }
 })
 
 fun TableHeader.validate(description: String, dieSize: Int, rollsRequired: Int) {
