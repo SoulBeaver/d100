@@ -5,7 +5,7 @@ import com.christian.dnd.d100.model.TableHeader
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 
-class TableCleanerSpec: Spek({
+class TableCleanerSpec : Spek({
     val tableCleaner = TableCleaner()
 
     group("cleaning header junk ") {

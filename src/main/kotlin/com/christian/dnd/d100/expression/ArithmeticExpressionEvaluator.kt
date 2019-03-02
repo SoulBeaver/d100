@@ -1,6 +1,6 @@
 package com.christian.dnd.d100.expression
 
-class ArithmeticExpressionEvaluator: ExpressionEvaluator {
+class ArithmeticExpressionEvaluator : ExpressionEvaluator {
     // Examples: 1+1, 10 +2, 3-5, 1*1
     private val arithmeticExpression = """\b(\d+)\s*([+])\s*(\d+)\b""".toRegex(RegexOption.IGNORE_CASE)
 
@@ -21,7 +21,8 @@ class ArithmeticExpressionEvaluator: ExpressionEvaluator {
 
                 replacedLineAcc.replace(
                     expressionToReplace,
-                    result.toString())
+                    result.toString()
+                )
             }
     }
 }

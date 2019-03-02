@@ -2,7 +2,7 @@ package com.christian.dnd.d100.expression
 
 import kotlin.random.Random
 
-class DiceExpressionEvaluator(private val random: Random = Random.Default): ExpressionEvaluator {
+class DiceExpressionEvaluator(private val random: Random = Random.Default) : ExpressionEvaluator {
     // Match any expression of the form (X)dY or the special case d%
     // Examples: d20, D20, 1d20, d%, 1000d1000
     private val diceExpression = """(\d*)d(\d+|%)""".toRegex(RegexOption.IGNORE_CASE)

@@ -36,7 +36,7 @@ positional arguments:
 
 ## Examples
 
-### Descriptive Tables
+### Structured Tables
 
 Given a file `dragonLair` with the following contents:
 
@@ -132,6 +132,37 @@ d% Roll --- Armor Type
 Running `d100 armor -s` will return `Plate`.
 
 Running `d100 armor` will return `Roll --- Armor Type Chain shirt`
+
+### WhiteSpace-delimited table files
+
+Given a file `exoticJungle` with the following contents:
+
+```
+Dominant race:
+Aett-raths (Goblins)
+Huldur (Elves)
+Raths (Dwarves)
+
+The village is located...
+On an ancient dragonwork stone-bridge
+On a network of lianas
+Inside a giant tree
+
+This village features
+A moat filled with freshwater sharks
+A moat filled with piranhas
+A moat filled with crocodiles
+```
+
+(Full table can be found at [/r/behindTheTables](https://old.reddit.com/r/BehindTheTables/comments/asb7se/a_wonderfully_exotic_jungle_village_d20/))
+
+Running with `d100 exoticJungle` will return
+
+```
+Dominant race Aett-raths (Goblins)
+The village is located On a network of lianas
+This village features A moat filled with piranhas
+```
 
 ### Unstructured table files
 

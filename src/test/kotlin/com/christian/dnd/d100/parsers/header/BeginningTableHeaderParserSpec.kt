@@ -3,7 +3,7 @@ package com.christian.dnd.d100.parsers.header
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 
-class BeginningTableHeaderParserSpec: Spek({
+class BeginningTableHeaderParserSpec : Spek({
     val tableHeaderParser = BeginningTableHeaderParser()
 
     group("an assortment of regex expressions to evaluate") {

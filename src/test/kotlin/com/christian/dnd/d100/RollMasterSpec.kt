@@ -17,7 +17,7 @@ class RollMasterSpec : Spek({
         )
 
         test("has descriptor and result") {
-            RollMaster().rollWithDescriptor(tables) shouldContain "This slime's colour: red"
+            RollMaster().roll(tables) shouldContain "This slime's colour: red"
         }
     }
 
@@ -59,7 +59,7 @@ class RollMasterSpec : Spek({
                 }
             })
 
-            rollMaster.rollWithDescriptor(tables) shouldContain "This slime's colour: cyan"
+            rollMaster.roll(tables) shouldContain "This slime's colour: cyan"
         }
     }
 
@@ -95,7 +95,7 @@ class RollMasterSpec : Spek({
         test("rolls the same table multiple times") {
             val rollMaster = RollMaster(Random(0))
 
-            rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
+            rollMaster.roll(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
                 "This slime's colour: black",
                 "This slime's colour: sherwood green",
@@ -145,7 +145,7 @@ class RollMasterSpec : Spek({
         test("rolls each table once") {
             val rollMaster = RollMaster(Random(0))
 
-            rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
+            rollMaster.roll(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
                 "This slime's texture: marbled",
                 "This slime's odor: oily"
@@ -193,7 +193,7 @@ class RollMasterSpec : Spek({
         test("rolls each table once") {
             val rollMaster = RollMaster(Random(0))
 
-            rollMaster.rollWithDescriptor(tables) shouldContainAll listOf(
+            rollMaster.roll(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
                 "This slime's texture: marbled",
                 "This slime's texture: viscous",
@@ -221,7 +221,7 @@ class RollMasterSpec : Spek({
                 }
             })
 
-            rollMaster.rollWithoutDescriptor(tables) shouldContain "Breastplate"
+            rollMaster.roll(tables, hideDescriptor = true) shouldContain "Breastplate"
         }
     }
 })

@@ -6,7 +6,7 @@ import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
-class DiceExpressionEvaluatorSpec: Spek({
+class DiceExpressionEvaluatorSpec : Spek({
     group("different dice expressions") {
         val testCases = listOf(
             TestCase("d0", "0", Random.Default),
@@ -22,7 +22,7 @@ class DiceExpressionEvaluatorSpec: Spek({
         )
 
         testCases.forEach { (expression, expected, random) ->
-            test ("$expression should evaluate to $expected") {
+            test("$expression should evaluate to $expected") {
                 val actual = DiceExpressionEvaluator(random).evaluate(expression)
                 actual shouldEqual expected
             }
@@ -52,7 +52,7 @@ class DiceExpressionEvaluatorSpec: Spek({
 
 private data class TestCase(val expression: String, val expected: String, val random: Random)
 
-private fun expectedRandomResult(result: Int) = object: Random() {
+private fun expectedRandomResult(result: Int) = object : Random() {
     override fun nextBits(bitCount: Int) = 0
     override fun nextInt(from: Int, until: Int) = result
 }

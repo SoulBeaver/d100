@@ -5,11 +5,12 @@ import com.christian.dnd.d100.expression.ArithmeticExpressionEvaluator
 import com.christian.dnd.d100.expression.DiceExpressionEvaluator
 import com.christian.dnd.d100.model.TableHeader
 import com.christian.dnd.d100.parsers.block.FileIsTableBlockParser
-import com.christian.dnd.d100.parsers.content.RangeTableContentParser
-import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
-import com.christian.dnd.d100.parsers.block.MultiTableBlockParser
+import com.christian.dnd.d100.parsers.block.MixedTableBlockParser
+import com.christian.dnd.d100.parsers.block.StructuredTableBlockParser
 import com.christian.dnd.d100.parsers.block.WhiteSpaceDelimitedTableBlockParser
 import com.christian.dnd.d100.parsers.block.WideTableBlockParser
+import com.christian.dnd.d100.parsers.content.RangeTableContentParser
+import com.christian.dnd.d100.parsers.content.SimpleTableContentParser
 import com.christian.dnd.d100.parsers.header.BeginningTableHeaderParser
 import com.christian.dnd.d100.parsers.header.EndingTableHeaderParser
 import org.amshove.kluent.shouldContain
@@ -20,8 +21,7 @@ import org.spekframework.spek2.Spek
 import java.io.File
 import kotlin.random.Random
 
-
-class D100TableParserSpec: Spek({
+class D100TableParserSpec : Spek({
     val tableCleaner = TableCleaner()
 
     val expressionEvaluationPipeline = listOf(
@@ -38,7 +38,7 @@ class D100TableParserSpec: Spek({
     val rangeTableContentParser = RangeTableContentParser()
 
     val wideTableBlockParser = WideTableBlockParser()
-    val structuredTableBlockParser = MultiTableBlockParser(
+    val structuredTableBlockParser = StructuredTableBlockParser(
         simpleTableContentParser,
         rangeTableContentParser,
         tableHeaderParsers
@@ -54,12 +54,15 @@ class D100TableParserSpec: Spek({
     val parser = D100TableParser(
         listOf(
             wideTableBlockParser,
-            structuredTableBlockParser,
-            whiteSpaceDelimitedTableBlockParser,
+            MixedTableBlockParser(
+                structuredTableBlockParser,
+                whiteSpaceDelimitedTableBlockParser
+            ),
             fileIsTableBlockParser
         ),
         expressionEvaluationPipeline,
-        tableCleaner)
+        tableCleaner
+    )
 
     group("parsing slime") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/slime").toURI())
@@ -297,13 +300,27 @@ class D100TableParserSpec: Spek({
             val meatTable = tables[0]
             meatTable.apply {
                 header.validate("Meat is", 12, 1)
-                results shouldContainAll listOf("Beef jerky", "Deer jerky", "Dried pork rinds", "Smoked sausage", "Spicy sausage", "Sweet sausage")
+                results shouldContainAll listOf(
+                    "Beef jerky",
+                    "Deer jerky",
+                    "Dried pork rinds",
+                    "Smoked sausage",
+                    "Spicy sausage",
+                    "Sweet sausage"
+                )
             }
 
             val breadTable = tables[1]
             breadTable.apply {
                 header.validate("Bread is", 12, 1)
-                results shouldContainAll listOf("Beer bread", "Biscuits", "Brown bread", "Pumpernickel", "Rye bread", "Sourdough bread")
+                results shouldContainAll listOf(
+                    "Beer bread",
+                    "Biscuits",
+                    "Brown bread",
+                    "Pumpernickel",
+                    "Rye bread",
+                    "Sourdough bread"
+                )
             }
 
             val vegetableTable = tables[2]
@@ -327,7 +344,14 @@ class D100TableParserSpec: Spek({
             val boilTable = tables[5]
             boilTable.apply {
                 header.validate("Boil and Serve is", 12, 1)
-                results shouldContainAll listOf("Beets", "Black beans", "Mushrooms", "Lentils", "White beans", "Turnips")
+                results shouldContainAll listOf(
+                    "Beets",
+                    "Black beans",
+                    "Mushrooms",
+                    "Lentils",
+                    "White beans",
+                    "Turnips"
+                )
             }
         }
     }
@@ -342,13 +366,27 @@ class D100TableParserSpec: Spek({
             val meatTable = tables[0]
             meatTable.apply {
                 header.validate("Meat is", 12, 1)
-                results shouldContainAll listOf("Beef jerky", "Deer jerky", "Dried pork rinds", "Smoked sausage", "Spicy sausage", "Sweet sausage")
+                results shouldContainAll listOf(
+                    "Beef jerky",
+                    "Deer jerky",
+                    "Dried pork rinds",
+                    "Smoked sausage",
+                    "Spicy sausage",
+                    "Sweet sausage"
+                )
             }
 
             val breadTable = tables[1]
             breadTable.apply {
                 header.validate("Bread is", 12, 1)
-                results shouldContainAll listOf("Beer bread", "Biscuits", "Brown bread", "Pumpernickel", "Rye bread", "Sourdough bread")
+                results shouldContainAll listOf(
+                    "Beer bread",
+                    "Biscuits",
+                    "Brown bread",
+                    "Pumpernickel",
+                    "Rye bread",
+                    "Sourdough bread"
+                )
             }
 
             val vegetableTable = tables[2]
@@ -372,7 +410,14 @@ class D100TableParserSpec: Spek({
             val boilTable = tables[5]
             boilTable.apply {
                 header.validate("Boil and Serve is", 12, 1)
-                results shouldContainAll listOf("Beets", "Black beans", "Mushrooms", "Lentils", "White beans", "Turnips")
+                results shouldContainAll listOf(
+                    "Beets",
+                    "Black beans",
+                    "Mushrooms",
+                    "Lentils",
+                    "White beans",
+                    "Turnips"
+                )
             }
         }
     }
@@ -458,6 +503,120 @@ class D100TableParserSpec: Spek({
                     "Yssen, the Unquiet Blades: glory-hound warriors",
                     "Quinn, the Noble and Most High; nouveau riche, not bound by blood but sworn in",
                     "Roll again, re-rolling further results of 10 – they have been disowned by this house"
+                )
+            }
+        }
+    }
+
+    group("parsing exoticJungle") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/exoticJungle").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 9
+
+            val raceTable = tables[0]
+            raceTable.apply {
+                header.validate("Dominant race", 20, 1)
+                results shouldContainAll listOf(
+                    "Aett-raths (Goblins)",
+                    "Nold-raths (Giants)",
+                    "Isstatsessei (lizardfolk)",
+                    "Chinasa (therianthropes)"
+                )
+            }
+
+            val funFactTable = tables[5]
+            funFactTable.apply {
+                header.validate("Fun fact", 8, 1)
+                results shouldContainAll listOf(
+                    "Men",
+                    "Women",
+                    "Children",
+                    "The Elderly"
+                )
+            }
+
+            val knownToTable = tables[6]
+            knownToTable.apply {
+                header.validate("Are known to", 20, 1)
+                results shouldContainAll listOf(
+                    "Perform religious rituals",
+                    "Provide for the chief’s harem",
+                    "Heal",
+                    "Be sacrificed to the gods"
+                )
+            }
+        }
+    }
+
+    group("parsing exoticJungle-mixing") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/exoticJungle-mixing").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 9
+
+            val raceTable = tables[0]
+            raceTable.apply {
+                header.validate("Dominant race", 20, 1)
+                results shouldContainAll listOf(
+                    "Aett-raths (Goblins)",
+                    "Nold-raths (Giants)",
+                    "Isstatsessei (lizardfolk)",
+                    "Chinasa (therianthropes)"
+                )
+            }
+
+            val knownToTable = tables[3]
+            knownToTable.apply {
+                header.validate("And", 20, 1)
+                results shouldContainAll listOf(
+                    "Decorations of humanoid bones",
+                    "A spider totem",
+                    "Every house is decorated with multi-coloured feathers",
+                    "A moat with a giant man-eating catfish"
+                )
+            }
+
+            val funFactTable = tables[5]
+            funFactTable.apply {
+                header.validate("Fun fact", 8, 1)
+                results shouldContainAll listOf(
+                    "Men",
+                    "Women",
+                    "Children",
+                    "The Elderly"
+                )
+            }
+        }
+    }
+
+    group("parsing exoticJungle-mixing2") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/exoticJungle-mixing2").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 9
+
+            val raceTable = tables[0]
+            raceTable.apply {
+                header.validate("Dominant race", 20, 1)
+                results shouldContainAll listOf(
+                    "Aett-raths (Goblins)",
+                    "Nold-raths (Giants)",
+                    "Isstatsessei (lizardfolk)",
+                    "Chinasa (therianthropes)"
+                )
+            }
+
+            val knownToTable = tables[8]
+            knownToTable.apply {
+                header.validate("Local transport", 20, 1)
+                results shouldContainAll listOf(
+                    "Giant crocodile",
+                    "Pterodactyl",
+                    "Giant spider"
                 )
             }
         }

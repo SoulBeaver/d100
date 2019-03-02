@@ -5,15 +5,14 @@ import kotlin.random.Random
 
 class RollMaster(private val random: Random = Random.Default) {
 
-    fun rollWithDescriptor(tables: List<Table.PreppedTable>): List<String> {
-        return roll(tables) { descriptor, result ->
-            "$descriptor $result"
-        }
-    }
-
-    fun rollWithoutDescriptor(tables: List<Table.PreppedTable>): List<String> {
-        return roll(tables) { _, result ->
-            result
+    fun roll(tables: List<Table.PreppedTable>, hideDescriptor: Boolean = false): List<String> {
+        return when {
+            hideDescriptor -> roll(tables) { _, result ->
+                result
+            }
+            else -> roll(tables) { descriptor, result ->
+                "$descriptor $result"
+            }
         }
     }
 
