@@ -26,17 +26,35 @@ import com.christian.dnd.d100.model.TableResults
  * Chain shirt
  */
 class RangeTableContentParser : TableContentParser {
+    private val singleValueRegex = """(\d+)\s+(.*)""".toRegex(RegexOption.IGNORE_CASE)
     private val rangeRegex = """(\d+)\s*[-.]+\s*(\d+)(.*)""".toRegex(RegexOption.IGNORE_CASE)
 
     override fun parse(tableContents: List<String>): TableResults {
         return tableContents.flatMap { line ->
-            val matches = rangeRegex.find(line)!!.groupValues
-
-            val rangeStart = matches[1].toInt()
-            val rangeEnd = matches[2].toInt()
-            val result = matches[3]
-
-            (rangeStart..rangeEnd).map { result }
+            when {
+                rangeRegex.find(line) != null -> rangeList(rangeRegex.find(line)!!)
+                singleValueRegex.find(line) != null -> singleValueList(singleValueRegex.find(line)!!)
+                else -> emptyList()
+            }
         }
+    }
+
+    private fun rangeList(match: MatchResult): List<String> {
+        val matches = match.groupValues
+
+        val rangeStart = matches[1].toInt()
+        val rangeEnd = (if (matches[2] == "00") "100" else matches[2]) .toInt()
+        val result = matches[3]
+
+        return (rangeStart..rangeEnd).map { result }
+    }
+
+    private fun singleValueList(match: MatchResult): List<String> {
+        val matches = match.groupValues
+
+        val value = matches[1].toInt()
+        val result = matches[2]
+
+        return listOf(result)
     }
 }

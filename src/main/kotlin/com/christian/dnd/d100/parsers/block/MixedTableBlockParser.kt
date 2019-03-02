@@ -14,10 +14,22 @@ class MixedTableBlockParser(
 ) : TableBlockParser {
 
     override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
-        val structuredTables = structuredTableBlockParser.parse(contents, filename)
-        val whiteSpaceTables = whiteSpaceDelimitedTableBlockParser.parse(contents, filename)
+        val structuredTables = when {
+            structuredTableBlockParser.canParse(contents) -> structuredTableBlockParser.parse(contents, filename)
+            else -> emptyList()
+        }
 
-        return aggregateTables(structuredTables, whiteSpaceTables)
+        val whiteSpaceTables = when {
+            whiteSpaceDelimitedTableBlockParser.canParse(contents) -> whiteSpaceDelimitedTableBlockParser.parse(contents, filename)
+            else -> emptyList()
+        }
+
+        return when {
+            structuredTables.isNotEmpty() && whiteSpaceTables.isNotEmpty() -> aggregateTables(structuredTables, whiteSpaceTables)
+            structuredTables.isNotEmpty() -> structuredTables
+            whiteSpaceTables.isNotEmpty() -> whiteSpaceTables
+            else -> emptyList()
+        }
     }
 
     /*
@@ -71,11 +83,7 @@ class MixedTableBlockParser(
     }
 
     private fun hasUniqueResults(structuredTables: List<Table.DirtyTable>, tableResults: TableResults): Boolean {
-        return structuredTables.none { structuredTable ->
-            tableResults.any { tableResult ->
-                structuredTable.results.contains(tableResult)
-            }
-        }
+        return structuredTables.none { it.results.any(tableResults::contains) }
     }
 
     private fun determinedUnusedTables(

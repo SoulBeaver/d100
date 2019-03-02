@@ -621,6 +621,52 @@ class D100TableParserSpec : Spek({
             }
         }
     }
+
+    group("parsing zeke") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/zeke").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 1
+
+            val locationTable = tables[0]
+            locationTable.apply {
+                header.validate("LOCATION", 100, 1)
+                results shouldContainAll listOf(
+                    "Asleep in the hut",
+                    "Eating smoked meat",
+                    "Crying",
+                    "Chopping down a tree—will return in 4x10 minutes with firewood"
+                )
+
+                results.count { it == "Asleep in the hut" } shouldEqual 25
+                results.count { it == "Crying" } shouldEqual 1
+                results.count { it == "Eating smoked meat" } shouldEqual 2
+            }
+        }
+    }
+
+    group("parsing unthing") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/unthing").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 1
+
+            val unthingTable = tables[0]
+            unthingTable.apply {
+                header.validate("UNTHING PROPERTIES", 10, 1)
+                results shouldContainAll listOf(
+                    "Two Hit Dice",
+                    "Two Hit Dice, spit stomach acid 10’ for 3 damage",
+                    "Two Hit Dice, paralyzing touch, always on fire",
+                    "Four Hit Dice, steals away a level (down to halfway up the last level) and a die of hit points at a touch, adding the hit points to its own."
+                )
+
+                results.count { it == "Two Hit Dice, paralyzing touch" } shouldEqual 2
+            }
+        }
+    }
 })
 
 fun TableHeader.validate(description: String, dieSize: Int, rollsRequired: Int) {
