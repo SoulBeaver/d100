@@ -1,6 +1,6 @@
 # d100
 
-[![CircleCI](https://circleci.com/gh/SoulBeaver/d100/tree/master.svg?style=svg)](https://circleci.com/gh/SoulBeaver/d100/tree/master) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![CircleCI](https://circleci.com/gh/SoulBeaver/d100/tree/master.svg?style=svg)](https://circleci.com/gh/SoulBeaver/d100/tree/master) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![codecov](https://codecov.io/gh/SoulBeaver/d100/branch/master/graph/badge.svg)](https://codecov.io/gh/SoulBeaver/d100)
                                                                                                                                       
 Parse and roll dX tables of all shapes and sizes!
 
