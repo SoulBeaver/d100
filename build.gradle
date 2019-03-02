@@ -63,3 +63,14 @@ test {
         includeEngines 'spek2'
     }
 }
+
+mavenPublish {
+    targets {
+        uploadArchives {
+            releaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            snapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            repositoryUsername = repositoryUsername
+            repositoryPassword = repositoryPassword
+        }
+    }
+}
