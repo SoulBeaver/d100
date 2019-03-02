@@ -2,37 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/SoulBeaver/d100/tree/master.svg?style=svg)](https://circleci.com/gh/SoulBeaver/d100/tree/master) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
                                                                                                                                       
-Roll dX tables using this nifty little script.
-
-## Installation
-
-This is a java script which you can run using
-
-`java -jar d100.jar <options> <FILE>`
-
-It might be best to alias this command:
-
-- Mac or Linux: in `.bash_profile` write `alias d100="java -jar /path/to/d100.jar"`
-
-Now you can simply write `d100 <options> <FILE>`.
-
-## Usage
-
-```$bash
-usage: [-h] [-s] [-r ROLLS] FILE
-
-optional arguments:
-  -h, --help      show this help message and exit
-
-  -s, --silent    Don't display descriptors, only the results.
-
-  -r ROLLS,       How many results to roll.
-  --rolls ROLLS
-
-
-positional arguments:
-  FILE            d100 file to roll from.
-```
+Parse and roll dX tables of all shapes and sizes!
 
 ## Examples
 
