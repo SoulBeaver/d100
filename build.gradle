@@ -25,12 +25,54 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
     id "com.github.johnrengelman.shadow" version "4.0.4"
     id 'application'
+
+    id 'java-library'
+    id 'maven-publish'
 }
 
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 
-group 'com.christian.dnd'
-version '1.0-SNAPSHOT'
+group 'dev.christianbroomfield.d100'
+version '1.0'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'd100'
+                description = 'Roll dX tables using this nifty little script.'
+                url = 'https://github.com/SoulBeaver/d100y'
+                licenses {
+                    license {
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'soulbeaver'
+                        name = 'Christian Broomfield'
+                        email = 'Christian.Broomfield@posteo.de'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://example.com/my-library.git'
+                    developerConnection = 'scm:git:ssh://example.com/my-library.git'
+                    url = 'http://example.com/my-library/'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'd100'
+            url = "file://${buildDir}/repo"
+        }
+    }
+}
 
 repositories {
     mavenCentral()
@@ -67,7 +109,7 @@ tasks.withType(ShadowJar) {
 }
 
 application {
-    mainClassName = "com.christian.dnd.d100.D100Kt"
+    mainClassName = "dev.christianbroomfield.d100.D100Kt"
 }
 
 test {
