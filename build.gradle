@@ -25,7 +25,8 @@ plugins {
 }
 
 apply plugin: "org.jlleitschuh.gradle.ktlint"
-apply plugin: "com.vanniktech.maven.publish"
+apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'jacoco'
 
 group GROUP
 version VERSION_NAME
@@ -62,6 +63,9 @@ test {
     useJUnitPlatform {
         includeEngines 'spek2'
     }
+    jacoco {
+        destinationFile = file("${buildDir}/jacoco/test.exec")
+    }
 }
 
 mavenPublish {
@@ -72,3 +76,13 @@ mavenPublish {
         }
     }
 }
+
+jacocoTestReport {
+    // Adjust the output of the test report
+    reports {
+        xml.enabled true
+        csv.enabled false
+    }
+}
+
+test.finalizedBy(jacocoTestReport)

@@ -44,4 +44,4 @@ jobs:
       - run: gradle test
 
       - codecov/upload:
-          file: https://codecov.io/gh/SoulBeaver/d100
+          file: {{ coverage_report_filepath }}
