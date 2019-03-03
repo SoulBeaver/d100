@@ -717,6 +717,103 @@ class D100TableParserSpec : Spek({
             }
         }
     }
+
+    group("parsing witchFood") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/witchFood").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 7
+
+            val cookedTable = tables[0]
+            cookedTable.apply {
+                header.validate("Tonight, in a witch's hovel, we dine on", 12, 1)
+                results shouldContainAll listOf(
+                    "Stewed.",
+                    "Battered."
+                )
+            }
+
+            val foodTable = tables[1]
+            foodTable.apply {
+                header.validate("", 20, 1)
+                results shouldContainAll listOf(
+                    "Songbird.",
+                    "Snake.",
+                    "Dog.",
+                    "Dwarf."
+                )
+            }
+
+            val withTable = tables[2]
+            withTable.apply {
+                header.validate("with", 20, 1)
+                results shouldContainAll listOf(
+                    "Dumplings.",
+                    "Red cabbage.",
+                    "String beans."
+                )
+            }
+
+            val andTable = tables[3]
+            andTable.apply {
+                header.validate("and", 20, 1)
+                results shouldContainAll listOf(
+                    "Apples.",
+                    "Carrots.",
+                    "Garlic."
+                )
+            }
+
+            val sideTable = tables[4]
+            sideTable.apply {
+                header.validate("On the side, there are some", 20, 1)
+                results shouldContainAll listOf(
+                    "Rum cakes.",
+                    "Maggots.",
+                    "Mysterious sausages."
+                )
+            }
+        }
+    }
+
+    group("parsing exoticFood") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/exoticFood").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 16
+
+            val sizeTable = tables[0]
+            sizeTable.apply {
+                header.validate("Size", 6, 1)
+                results shouldContainAll listOf(
+                    "Tiny – this fruit could be easily flicked away",
+                    "Enormous – this fruit is man-sized or larger"
+                )
+            }
+
+            val seedColorTable = tables[13]
+            seedColorTable.apply {
+                header.validate("Seed Colour", 8, 1)
+                results shouldContainAll listOf(
+                    "very light (8): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet",
+                    "light (1): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet"
+                )
+
+                results.count { it == "Different shade of Skin Colour." } shouldEqual 4
+            }
+
+            val specialDetailTable = tables[15]
+            specialDetailTable.apply {
+                header.validate("Special Detail", 60, 1)
+                results shouldContainAll listOf(
+                    "The skin pattern is fluorescent",
+                    "It is extremely rare and prohibitively expensive"
+                )
+            }
+        }
+    }
 })
 
 fun TableHeader.validate(description: String, dieSize: Int, rollsRequired: Int) {

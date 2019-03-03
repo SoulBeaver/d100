@@ -38,7 +38,7 @@ class RangeTableContentParser : TableContentParser {
             when {
                 rangeRegex.find(line) != null -> rangeList(rangeRegex.find(line)!!)
                 singleValueRegex.find(line) != null -> singleValueList(singleValueRegex.find(line)!!)
-                else -> emptyList()
+                else -> listOf(line)
             }
         }
     }

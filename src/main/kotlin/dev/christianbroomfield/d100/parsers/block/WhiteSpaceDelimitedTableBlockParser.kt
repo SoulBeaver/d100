@@ -36,16 +36,23 @@ class WhiteSpaceDelimitedTableBlockParser : TableBlockParser {
         val tableHeader = TableHeader(1, tableBlock.size - 1, tableBlock.first())
         val table = Table.DirtyTable(tableHeader, tableBlock.drop(1))
 
-        return if (tableBlock.size == contents.size)
-            tablesAcc + table
-        else
-            parseRecursively(contents.subList(tableBlock.size + 1, contents.size), filename, tablesAcc + table)
+        return when {
+            tableBlock.size == contents.size -> addNonEmptyTable(tablesAcc, table)
+            else -> parseRecursively(contents.subList(tableBlock.size + 1, contents.size), filename, addNonEmptyTable(tablesAcc, table))
+        }
+    }
+
+    private fun addNonEmptyTable(tables: List<Table.DirtyTable>, tableToAdd: Table.DirtyTable): List<Table.DirtyTable> {
+        return when {
+            tableToAdd.header.dieSize > 1 -> tables + tableToAdd
+            else -> tables
+        }
     }
 
     override fun canParse(contents: List<String>): Boolean {
-        val tablesFound = trimLeadingAndTrailingBlankLines(contents).count { it.isBlank() } + 1
+        val tables = parse(contents, "")
 
-        return tablesFound > 1
+        return tables.size > 1
     }
 
     private fun trimLeadingAndTrailingBlankLines(contents: List<String>): List<String> {

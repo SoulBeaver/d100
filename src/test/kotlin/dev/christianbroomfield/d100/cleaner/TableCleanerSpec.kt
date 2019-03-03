@@ -44,7 +44,10 @@ class TableCleanerSpec : Spek({
             "1.a wren." to "a wren.",
             "1) a wren." to "a wren.",
             "1: a wren." to "a wren.",
-            "1:a wren." to "a wren."
+            "1:a wren." to "a wren.",
+            ". a wren " to "a wren",
+            " . a wren   " to "a wren",
+            " . a wren.   " to "a wren."
         )
 
         testCases.forEach { expression, expected ->

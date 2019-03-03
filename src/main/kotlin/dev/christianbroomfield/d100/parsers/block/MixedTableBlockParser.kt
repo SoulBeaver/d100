@@ -78,7 +78,7 @@ class MixedTableBlockParser(
     }
 
     private fun isCompletelySeparateTable(structuredTables: List<Table.DirtyTable>, table: Table.DirtyTable): Boolean {
-        val isNotAnEmptyTable = table.header.dieSize > 0
+        val isNotAnEmptyTable = table.header.dieSize > 1
         val isUniqueTable = isAGenuineHeader(structuredTables, table.header) && hasUniqueResults(structuredTables, table.results)
 
         return isNotAnEmptyTable && isUniqueTable

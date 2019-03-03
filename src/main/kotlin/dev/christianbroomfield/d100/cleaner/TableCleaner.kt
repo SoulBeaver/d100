@@ -38,6 +38,8 @@ class TableCleaner {
                 line.trim()
                     .replace("...", "")
                     .replace("…", "")
+                    .removePrefix(".")
+                    .removePrefix(",")
                     /*
                      * Trims the #-bullet from a result.
                      *
