@@ -33,8 +33,12 @@ class StructuredTableBlockParser(
      * @param filename name of the file being parsed
      * @return the parsed table
      */
-    override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> =
-        parseRecursively(contents.filter(String::isNotBlank), filename)
+    override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
+        val parsedTables = parseRecursively(contents.filter(String::isNotBlank), filename)
+        val mergedTables = mergeEmptyTables(parsedTables)
+
+        return mergedTables
+    }
 
     // We are intentionally not tailrecursive because of a kotlin compiler error in 1.3.X (https://youtrack.jetbrains.com/issue/KT-14961)
     private fun parseRecursively(
@@ -47,11 +51,11 @@ class StructuredTableBlockParser(
 
             val tableBlock = parseTableBlock(
                 tableHeader,
-                contents.subList(contents.indexOf(headerLine) + 1, contents.size)
+                contents.drop(contents.indexOf(headerLine) + 1)
             )
 
             parseRecursively(
-                contents.subList(tableBlockStart + tableBlock.linesRead + tableHeaderBlock.linesRead, contents.size),
+                contents.drop(tableBlockStart + tableBlock.linesRead + tableHeaderBlock.linesRead),
                 filename,
                 tablesAcc + tableBlock.table
             )
@@ -98,4 +102,22 @@ class StructuredTableBlockParser(
 
     private fun parseTableHeader(header: String) =
         tableHeaderParsers.first { parser -> parser.isHeader(header) }.parse(header)
+
+    private tailrec fun mergeEmptyTables(tables: List<Table.DirtyTable>, mergedTables: List<Table.DirtyTable> = emptyList()): List<Table.DirtyTable> {
+        for (table in tables) {
+            return when {
+                table.results.isEmpty() -> {
+                    val mergedTableResults = tables.drop(1)
+                        .takeWhile { it.results.isEmpty() }
+                        .map { it.header.descriptor }
+
+                    mergeEmptyTables(tables.drop(mergedTableResults.size + 1), mergedTables + table.copy(results = mergedTableResults))
+                }
+
+                else -> mergeEmptyTables(tables.drop(1), mergedTables + table)
+            }
+        }
+
+        return mergedTables
+    }
 }

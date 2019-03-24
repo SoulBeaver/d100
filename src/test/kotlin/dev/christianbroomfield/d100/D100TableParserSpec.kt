@@ -173,7 +173,7 @@ class D100TableParserSpec : Spek({
             weatherTable.apply {
                 header.validate("specialWeather", 85, 1)
 
-                results shouldContain "Heat Metal. All metal within the vicinity of the storm is affected by the Heat Metal spell for 3 hours."
+                results shouldContain "Illusory Horrors. Visions of pure terror reside within this storm. Any creature with an intelligence of 2 or greater must make a DC 14 Wisdom saving throw or become Stunned by the atrocious images within. Creatures that become stunned in this manner may repeat their saving throw every minute thereafter. If a creature fails 3 saving throws in a row, their worst fear becomes real before them."
                 results shouldContain "Plant Growth. Plants in the storm's area grow to gargantuan size for one year. A creature moving through an effected area must spend 4 feet of movement for every 1 foot it wishes to move."
             }
         }
@@ -190,7 +190,7 @@ class D100TableParserSpec : Spek({
 
                 results shouldContain "A well made hourglass with no sand inside."
                 results shouldContain "A curious looking leaf that curls up when touched"
-                results shouldContain "A pin cushion in the shape of a heart. 8 pins are pushed into it."
+                results shouldContain "A wooden hand with the ring finger missing"
             }
         }
     }
@@ -266,8 +266,8 @@ class D100TableParserSpec : Spek({
             extortTable.apply {
                 header.validate("The raiders are extorting our village for", 4, 1)
 
-                results shouldContain "[10] CP per week from each family"
-                results shouldContain "[4] SP per month from each family"
+                results shouldContain "[13] CP per week from each family"
+                results shouldContain "[2] SP per month from each family"
                 results shouldNotContain "They also demand..."
             }
 
@@ -797,8 +797,8 @@ class D100TableParserSpec : Spek({
             seedColorTable.apply {
                 header.validate("Seed Colour", 8, 1)
                 results shouldContainAll listOf(
-                    "very light (8): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet",
-                    "light (1): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet"
+                    "very light (2): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet",
+                    "light (6): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet"
                 )
 
                 results.count { it == "Different shade of Skin Colour." } shouldEqual 4
@@ -810,6 +810,54 @@ class D100TableParserSpec : Spek({
                 results shouldContainAll listOf(
                     "The skin pattern is fluorescent",
                     "It is extremely rare and prohibitively expensive"
+                )
+            }
+        }
+    }
+
+    group("parsing strangePlaces") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/strangePlaces").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 8
+
+            val sourceTable = tables[0]
+            sourceTable.apply {
+                header.validate("SOURCE", 10, 1)
+                results shouldContainAll listOf(
+                    "Rumors speak of a",
+                    "Passers-by talk about the disappearance of someone. They mention a"
+                )
+            }
+
+            val descriptor1Table = tables[1]
+            descriptor1Table.apply {
+                header.validate("DESCRIPTOR 1", 20, 1)
+                results shouldContainAll listOf(
+                    "haunted",
+                    "cursed",
+                    "dark"
+                )
+            }
+
+            val placeTable = tables[2]
+            placeTable.apply {
+                header.validate("PLACE", 100, 1)
+                results shouldContainAll listOf(
+                    "house",
+                    "graveyard",
+                    "lair"
+                )
+            }
+
+            val actionTable = tables[7]
+            actionTable.apply {
+                header.validate("ACTION", 20, 1)
+                results shouldContainAll listOf(
+                    "starts crying when asked about the place.",
+                    "calls the guard, when asked about the place.",
+                    "says it’s already too late."
                 )
             }
         }
