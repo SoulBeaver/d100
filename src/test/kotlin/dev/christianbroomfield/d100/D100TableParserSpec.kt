@@ -262,13 +262,13 @@ class D100TableParserSpec : Spek({
         val tables = parser.parse(file)
 
         test("has the correct attributes set") {
-            val extortTable = tables[0]
-            extortTable.apply {
-                header.validate("The raiders are extorting our village for", 4, 1)
+            val demandTable = tables[1]
+            demandTable.apply {
+                header.validate("They also demand", 10, 1)
 
-                results shouldContain "[13] CP per week from each family"
-                results shouldContain "[2] SP per month from each family"
-                results shouldNotContain "They also demand..."
+                results shouldContain "that we give them half of all the food we grow"
+                results shouldContain "free food and drink at the tavern every time they come through town"
+                results shouldNotContain "Worse, they routinely torment us by..."
             }
 
             val tormentTable = tables[2]
@@ -793,13 +793,19 @@ class D100TableParserSpec : Spek({
                 )
             }
 
+            val seedsTable = tables[12]
+            seedsTable.apply {
+                header.validate("Seeds", 8, 1)
+                results shouldContainAll listOf(
+                    "One big core",
+                    "On the stem",
+                    "None"
+                )
+            }
+
             val seedColorTable = tables[13]
             seedColorTable.apply {
                 header.validate("Seed Colour", 8, 1)
-                results shouldContainAll listOf(
-                    "very light (2): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet",
-                    "light (6): 1. Grey; 2. Pink; 3. Red; 4. Brown; 5. Orange; 6. Yellow; 7. Green; 8. Cyan; 9. Blue; 10. Violet"
-                )
 
                 results.count { it == "Different shade of Skin Colour." } shouldEqual 4
             }
