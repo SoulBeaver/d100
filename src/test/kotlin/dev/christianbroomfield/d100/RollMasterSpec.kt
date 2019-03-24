@@ -18,7 +18,7 @@ class RollMasterSpec : Spek({
         )
 
         test("has descriptor and result") {
-            dev.christianbroomfield.d100.RollMaster().roll(tables) shouldContain "This slime's colour: red"
+            RollMaster().roll(tables) shouldContain "This slime's colour: red"
         }
     }
 
@@ -52,7 +52,7 @@ class RollMasterSpec : Spek({
         )
 
         test("picks a result determined by fair random die roll") {
-            val rollMaster = dev.christianbroomfield.d100.RollMaster(object : Random() {
+            val rollMaster = RollMaster(object : Random() {
                 override fun nextBits(bitCount: Int): Int = 0
 
                 override fun nextInt(until: Int): Int {
@@ -94,7 +94,7 @@ class RollMasterSpec : Spek({
         )
 
         test("rolls the same table multiple times") {
-            val rollMaster = dev.christianbroomfield.d100.RollMaster(Random(0))
+            val rollMaster = RollMaster(Random(0))
 
             rollMaster.roll(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
@@ -144,7 +144,7 @@ class RollMasterSpec : Spek({
         )
 
         test("rolls each table once") {
-            val rollMaster = dev.christianbroomfield.d100.RollMaster(Random(0))
+            val rollMaster = RollMaster(Random(0))
 
             rollMaster.roll(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
@@ -192,7 +192,7 @@ class RollMasterSpec : Spek({
         )
 
         test("rolls each table once") {
-            val rollMaster = dev.christianbroomfield.d100.RollMaster(Random(0))
+            val rollMaster = RollMaster(Random(0))
 
             rollMaster.roll(tables) shouldContainAll listOf(
                 "This slime's colour: eggshell",
@@ -214,7 +214,7 @@ class RollMasterSpec : Spek({
         )
 
         test("returns the result without a descriptor") {
-            val rollMaster = dev.christianbroomfield.d100.RollMaster(object : Random() {
+            val rollMaster = RollMaster(object : Random() {
                 override fun nextBits(bitCount: Int): Int = 0
 
                 override fun nextInt(until: Int): Int {
@@ -242,7 +242,7 @@ class RollMasterSpec : Spek({
         )
 
         test("returns a random result within range") {
-            val rollMaster = dev.christianbroomfield.d100.RollMaster()
+            val rollMaster = RollMaster()
 
             repeat(1000) {
                 tables[0].results shouldContain rollMaster.roll(tables, hideDescriptor = true)[0]

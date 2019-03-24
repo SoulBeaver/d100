@@ -51,7 +51,7 @@ class D100TableParserSpec : Spek({
 
     val whiteSpaceDelimitedTableBlockParser = WhiteSpaceDelimitedTableBlockParser()
 
-    val parser = dev.christianbroomfield.d100.D100TableParser(
+    val parser = D100TableParser(
         listOf(
             wideTableBlockParser,
             MixedTableBlockParser(
