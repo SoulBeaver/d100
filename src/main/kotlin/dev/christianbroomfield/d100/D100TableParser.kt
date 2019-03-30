@@ -6,6 +6,7 @@ import dev.christianbroomfield.d100.expression.DiceExpressionEvaluator
 import dev.christianbroomfield.d100.expression.ExpressionEvaluator
 import dev.christianbroomfield.d100.model.Table
 import dev.christianbroomfield.d100.parsers.block.FileIsTableBlockParser
+import dev.christianbroomfield.d100.parsers.block.LaxStructuredTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.MixedTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.StructuredTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.TableBlockParser
@@ -88,6 +89,11 @@ class D100TableParser(
                 rangeTableContentParser,
                 tableHeaderParsers
             )
+            val laxStructuredTableBlockParser = LaxStructuredTableBlockParser(
+                simpleTableContentParser,
+                rangeTableContentParser,
+                tableHeaderParsers
+            )
             val fileIsTableBlockParser = FileIsTableBlockParser(
                 simpleTableContentParser,
                 rangeTableContentParser,
@@ -100,6 +106,7 @@ class D100TableParser(
                     wideTableBlockParser,
                     MixedTableBlockParser(
                         structuredTableBlockParser,
+                        laxStructuredTableBlockParser,
                         whiteSpaceDelimitedTableBlockParser
                     ),
                     fileIsTableBlockParser

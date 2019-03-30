@@ -1,68 +1,15 @@
 package dev.christianbroomfield.d100
 
-import dev.christianbroomfield.d100.cleaner.TableCleaner
-import dev.christianbroomfield.d100.expression.ArithmeticExpressionEvaluator
-import dev.christianbroomfield.d100.expression.DiceExpressionEvaluator
 import dev.christianbroomfield.d100.model.TableHeader
-import dev.christianbroomfield.d100.parsers.block.FileIsTableBlockParser
-import dev.christianbroomfield.d100.parsers.block.MixedTableBlockParser
-import dev.christianbroomfield.d100.parsers.block.StructuredTableBlockParser
-import dev.christianbroomfield.d100.parsers.block.WhiteSpaceDelimitedTableBlockParser
-import dev.christianbroomfield.d100.parsers.block.WideTableBlockParser
-import dev.christianbroomfield.d100.parsers.content.RangeTableContentParser
-import dev.christianbroomfield.d100.parsers.content.SimpleTableContentParser
-import dev.christianbroomfield.d100.parsers.header.BeginningTableHeaderParser
-import dev.christianbroomfield.d100.parsers.header.EndingTableHeaderParser
 import org.amshove.kluent.shouldContain
 import org.amshove.kluent.shouldContainAll
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotContain
 import org.spekframework.spek2.Spek
 import java.io.File
-import kotlin.random.Random
 
 class D100TableParserSpec : Spek({
-    val tableCleaner = TableCleaner()
-
-    val expressionEvaluationPipeline = listOf(
-        DiceExpressionEvaluator(Random(0)),
-        ArithmeticExpressionEvaluator()
-    )
-
-    val tableHeaderParsers = listOf(
-        BeginningTableHeaderParser(),
-        EndingTableHeaderParser()
-    )
-
-    val simpleTableContentParser = SimpleTableContentParser()
-    val rangeTableContentParser = RangeTableContentParser()
-
-    val wideTableBlockParser = WideTableBlockParser()
-    val structuredTableBlockParser = StructuredTableBlockParser(
-        simpleTableContentParser,
-        rangeTableContentParser,
-        tableHeaderParsers
-    )
-    val fileIsTableBlockParser = FileIsTableBlockParser(
-        simpleTableContentParser,
-        rangeTableContentParser,
-        tableHeaderParsers
-    )
-
-    val whiteSpaceDelimitedTableBlockParser = WhiteSpaceDelimitedTableBlockParser()
-
-    val parser = D100TableParser(
-        listOf(
-            wideTableBlockParser,
-            MixedTableBlockParser(
-                structuredTableBlockParser,
-                whiteSpaceDelimitedTableBlockParser
-            ),
-            fileIsTableBlockParser
-        ),
-        expressionEvaluationPipeline,
-        tableCleaner
-    )
+    val parser = D100TableParser.default()
 
     group("parsing slime") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/slime").toURI())
@@ -74,7 +21,7 @@ class D100TableParserSpec : Spek({
                 header.validate("This slime’s colour", 20, 1)
 
                 results shouldContain "Is red. Its touch is burning hot."
-                results shouldContain "Is grey. It attacks by exploding and then reforming itself 2 rounds later."
+                results shouldContain "Is clear. It deals the same sort of damage as the last attack that hurt it."
             }
 
             val slimeTextureTable = tables[1]
@@ -658,7 +605,7 @@ class D100TableParserSpec : Spek({
                 header.validate("UNTHING PROPERTIES", 10, 1)
                 results shouldContainAll listOf(
                     "Two Hit Dice",
-                    "Two Hit Dice, spit stomach acid 10’ for 3 damage",
+                    "Two Hit Dice, moves at twice human speed",
                     "Two Hit Dice, paralyzing touch, always on fire",
                     "Four Hit Dice, steals away a level (down to halfway up the last level) and a die of hit points at a touch, adding the hit points to its own."
                 )
@@ -869,7 +816,6 @@ class D100TableParserSpec : Spek({
         }
     }
 
-    /*
     group("parsing wildMagicSurges") {
         val file = File(D100TableParserSpec::class.java.getResource("/tables/wildMagicSurges").toURI())
         val tables = parser.parse(file)
@@ -892,7 +838,6 @@ class D100TableParserSpec : Spek({
             }
         }
     }
-    */
 })
 
 fun TableHeader.validate(description: String, dieSize: Int, rollsRequired: Int) {

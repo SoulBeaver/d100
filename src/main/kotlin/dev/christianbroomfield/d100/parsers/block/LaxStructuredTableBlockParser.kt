@@ -8,9 +8,6 @@ import dev.christianbroomfield.d100.parsers.content.TableContentParser
 import dev.christianbroomfield.d100.parsers.header.TableHeaderParser
 import dev.christianbroomfield.d100.utils.takeWhileUpToMax
 
-internal data class TableHeaderBlock(val tableHeader: TableHeader, val tableBlockStart: Int, val linesRead: Int, val headerLine: String)
-internal data class TableBlock(val table: Table.DirtyTable, val linesRead: Int)
-
 /**
  * Assumes that the file has a structure wherein one or more tables will have a descriptor and a list of die roll results.
  *
@@ -22,7 +19,7 @@ internal data class TableBlock(val table: Table.DirtyTable, val linesRead: Int)
  *
  * The table is considered structured because it contains a header specifying the number of results (d%).
  */
-class StructuredTableBlockParser(
+class LaxStructuredTableBlockParser(
     private val simpleTableContentParser: TableContentParser,
     private val rangeTableContentParser: TableContentParser,
     private val tableHeaderParsers: List<TableHeaderParser>
@@ -49,37 +46,17 @@ class StructuredTableBlockParser(
         return parseTableHeaderBlock(contents)?.let { tableHeaderBlock ->
             val (tableHeader, tableBlockStart, _, headerLine) = tableHeaderBlock
 
-            when {
-                isValidTableBlock(tableHeaderBlock, contents.drop(contents.indexOf(headerLine) + 1)) -> {
-                    val tableBlock = parseTableBlock(
-                        tableHeader,
-                        contents.drop(contents.indexOf(headerLine) + 1)
-                    )
+            val tableBlock = parseTableBlock(
+                tableHeader,
+                contents.drop(contents.indexOf(headerLine) + 1)
+            )
 
-                    parseRecursively(
-                        contents.drop(tableBlockStart + tableBlock.linesRead + tableHeaderBlock.linesRead),
-                        filename,
-                        tablesAcc + tableBlock.table
-                    )
-                }
-                else -> parseRecursively(
-                    contents.drop(1),
-                    filename,
-                    tablesAcc
-                )
-            }
+            parseRecursively(
+                contents.drop(tableBlockStart + tableBlock.linesRead + tableHeaderBlock.linesRead),
+                filename,
+                tablesAcc + tableBlock.table
+            )
         } ?: tablesAcc
-    }
-
-    private fun isValidTableBlock(headerBlock: TableHeaderBlock, contents: List<String>): Boolean {
-        val (header) = headerBlock
-        val maxResultsPossible = header.dieSize * header.rollsRequired
-        val resultsRead = contents.takeWhileUpToMax(maxResultsPossible) { line -> !isHeader(line) }
-
-        return headerBlock.linesRead > 1 ||
-                resultsRead.size < maxResultsPossible ||
-                resultsRead.size == contents.size ||
-                isHeader(contents[maxResultsPossible])
     }
 
     override fun canParse(contents: List<String>) = parse(contents, "").isNotEmpty()

@@ -10,6 +10,7 @@ import dev.christianbroomfield.d100.model.TableResults
  */
 class MixedTableBlockParser(
     private val structuredTableBlockParser: StructuredTableBlockParser,
+    private val laxStructuredTableBlockParser: LaxStructuredTableBlockParser,
     private val whiteSpaceDelimitedTableBlockParser: WhiteSpaceDelimitedTableBlockParser
 ) : TableBlockParser {
 
@@ -19,13 +20,14 @@ class MixedTableBlockParser(
      * @return the parsed table
      */
     override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
-        val structuredTables = when {
-            structuredTableBlockParser.canParse(contents) -> structuredTableBlockParser.parse(contents, filename)
+        val whiteSpaceTables = when {
+            whiteSpaceDelimitedTableBlockParser.canParse(contents) -> whiteSpaceDelimitedTableBlockParser.parse(contents, filename)
             else -> emptyList()
         }
 
-        val whiteSpaceTables = when {
-            whiteSpaceDelimitedTableBlockParser.canParse(contents) -> whiteSpaceDelimitedTableBlockParser.parse(contents, filename)
+        val structuredTables = when {
+            laxStructuredTableBlockParser.canParse(contents) && whiteSpaceTables.isNotEmpty() -> laxStructuredTableBlockParser.parse(contents, filename)
+            structuredTableBlockParser.canParse(contents) -> structuredTableBlockParser.parse(contents, filename)
             else -> emptyList()
         }
 
