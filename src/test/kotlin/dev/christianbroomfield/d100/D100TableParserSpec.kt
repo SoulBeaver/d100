@@ -868,6 +868,31 @@ class D100TableParserSpec : Spek({
             }
         }
     }
+
+    /*
+    group("parsing wildMagicSurges") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/wildMagicSurges").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 1
+
+            val surgeTable = tables[0]
+            surgeTable.apply {
+                header.validate("wildMagicSurges", 100, 1)
+                results shouldContainAll listOf(
+                    "A caster teleports 25 ft. to the left of their location. A trail of fire appears from their starting position to their teleported position.",
+                    "Caster’s hair changes color.",
+                    "The caster is launched ten feet into the air and falls back down.",
+                    "Magical silence falls in a 50 ft radius that lasts for 10 minutes.",
+                    "The caster is trapped in a giant glass ball. Must be broken to be freed.",
+                    "The smell of cinnamon fills the area in a 30-foot radius around the caster.",
+                    "The caster gains 50 lbs."
+                )
+            }
+        }
+    }
+    */
 })
 
 fun TableHeader.validate(description: String, dieSize: Int, rollsRequired: Int) {
