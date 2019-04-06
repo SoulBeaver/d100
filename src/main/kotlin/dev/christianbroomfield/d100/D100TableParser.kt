@@ -8,7 +8,7 @@ import dev.christianbroomfield.d100.model.Table
 import dev.christianbroomfield.d100.parsers.block.FileIsTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.LaxStructuredTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.MixedTableBlockParser
-import dev.christianbroomfield.d100.parsers.block.StructuredTableBlockParser
+import dev.christianbroomfield.d100.parsers.block.StrictStructuredTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.TableBlockParser
 import dev.christianbroomfield.d100.parsers.block.WhiteSpaceDelimitedTableBlockParser
 import dev.christianbroomfield.d100.parsers.block.WideTableBlockParser
@@ -84,7 +84,7 @@ class D100TableParser(
             val rangeTableContentParser = RangeTableContentParser()
 
             val wideTableBlockParser = WideTableBlockParser()
-            val structuredTableBlockParser = StructuredTableBlockParser(
+            val strictStructuredTableBlockParser = StrictStructuredTableBlockParser(
                 simpleTableContentParser,
                 rangeTableContentParser,
                 tableHeaderParsers
@@ -105,7 +105,7 @@ class D100TableParser(
                 listOf(
                     wideTableBlockParser,
                     MixedTableBlockParser(
-                        structuredTableBlockParser,
+                        strictStructuredTableBlockParser,
                         laxStructuredTableBlockParser,
                         whiteSpaceDelimitedTableBlockParser
                     ),
