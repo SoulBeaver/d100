@@ -838,6 +838,65 @@ class D100TableParserSpec : Spek({
             }
         }
     }
+
+    group("parsing leyLines") {
+        val file = File(D100TableParserSpec::class.java.getResource("/tables/leyLines").toURI())
+        val tables = parser.parse(file)
+
+        test("has the correct attributes set") {
+            tables.size shouldEqual 9
+
+            val locationTable = tables[0]
+            locationTable.apply {
+                header.validate("This Ley Line is located", 20, 1)
+                results shouldContainAll listOf(
+                    "Deep in a cave.",
+                    "In the lowest level of a large pyramid.",
+                    "In an abandoned mine."
+                )
+            }
+
+            val headTable = tables[1]
+            headTable.apply {
+                header.validate("The head of the line is marked by", 10, 1)
+                results shouldContainAll listOf(
+                    "A small cairn of blood red stones.",
+                    "Five vertical rectangular bars growing successively longer. When the ley is inactive, the bars are dull grey lead. As the ley becomes active, one by one the bars turn to gold. Any bars removed from the power of the ley immediately revert to lead.",
+                    "An ancient burial mound."
+                )
+            }
+
+            val travelTable = tables[5]
+            travelTable.apply {
+                header.validate("Travelling the Ley takes you to a place", 12, 1)
+                results shouldContainAll listOf(
+                    "Elsewhere in your home country.",
+                    "At a distant desert oasis.",
+                    "On a broad plain crisscrossed with dozens of marked ley lines."
+                )
+            }
+
+            val arriveTimeTable = tables[6]
+            arriveTimeTable.apply {
+                header.validate("You arrive at a time", 6, 1)
+                results.size shouldEqual 6
+                results shouldContainAll listOf(
+                    "In the present."
+                )
+            }
+
+            val discoveryTable = tables[8]
+            discoveryTable.apply {
+                header.validate("From here, you might even find the path to", 20, 1)
+                results shouldContainAll listOf(
+                    "The Well of Souls",
+                    "The Center of the Planet",
+                    "The Isle of the Dead",
+                    "The Great Nothing"
+                )
+            }
+        }
+    }
 })
 
 fun TableHeader.validate(description: String, dieSize: Int, rollsRequired: Int) {

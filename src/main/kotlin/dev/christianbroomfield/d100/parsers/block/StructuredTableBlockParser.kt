@@ -35,7 +35,7 @@ abstract class StructuredTableBlockParser(
      */
     override fun parse(contents: List<String>, filename: String): List<Table.DirtyTable> {
         val parsedTables = parseRecursively(contents.filter(String::isNotBlank), filename)
-        val mergedTables = mergeEmptyTables(parsedTables)
+        val mergedTables = mergeIncompleteTables(contents, mergeEmptyTables(parsedTables))
 
         return mergedTables
     }
@@ -118,11 +118,11 @@ abstract class StructuredTableBlockParser(
         for (table in tables) {
             return when {
                 table.results.isEmpty() -> {
-                    val mergedTableResults = tables.drop(1)
+                    val mergedTableResults = tables
                         .takeWhile { it.results.isEmpty() }
                         .map { it.header.descriptor }
 
-                    mergeEmptyTables(tables.drop(mergedTableResults.size + 1), mergedTables + table.copy(results = mergedTableResults))
+                    mergeEmptyTables(tables.drop(mergedTableResults.size), mergedTables + table.copy(results = mergedTableResults))
                 }
 
                 else -> mergeEmptyTables(tables.drop(1), mergedTables + table)
@@ -130,5 +130,38 @@ abstract class StructuredTableBlockParser(
         }
 
         return mergedTables
+    }
+
+    private fun mergeIncompleteTables(contents: List<String>, tables: List<Table.DirtyTable>): List<Table.DirtyTable> {
+        var mergedTables = mutableListOf<Table.DirtyTable>()
+        for (i in tables.indices) {
+            if (i == 0) {
+                mergedTables.add(tables[i])
+                continue
+            }
+
+            val mergedTable = tables[i]
+            val previousMergedTable = tables[i - 1]
+            if (mergedTable.header.dieSize != mergedTable.results.size &&
+                previousMergedTable.header.dieSize != previousMergedTable.results.size &&
+                previousMergedTable.results.size + mergedTable.results.size == previousMergedTable.header.dieSize) {
+
+                val originalResults = reReadResultsFromFile(contents, mergedTable.results)
+
+                val superMergedTable = previousMergedTable.copy(results = previousMergedTable.results + originalResults)
+                mergedTables = mergedTables.dropLast(1).toMutableList()
+                mergedTables.add(superMergedTable)
+            } else {
+                mergedTables.add(mergedTable)
+            }
+        }
+
+        return mergedTables
+    }
+
+    private fun reReadResultsFromFile(originalContents: List<String>, results: List<String>): List<String> {
+        return results.map { result ->
+            originalContents.find { it.contains(result) }!!
+        }
     }
 }
